@@ -1,0 +1,70 @@
+generated: '2026-08-05'
+method: searched
+source: https://connect.stream.co/docs/sending-test-data-to-stream
+summary: >-
+  Stream (Wagestream) publishes a separate Sandbox environment declared in the OpenAPI servers[] block,
+  a dedicated test-enrolment trigger endpoint that simulates an employee signing up in the app, and a
+  published table of dummy UK bank accounts that are engineered to pass Stream's modulus and Faster
+  Payments validation. There is no self-serve signup: sandbox access requires an x-api-key issued by a
+  Stream Client Success Manager, the same credential shape as production.
+environments:
+- mode: production
+  base_url: https://publicapi.wagestream.io/pushapi-prod
+  source: openapi/wagestream-integrations-api-openapi.yml#/servers/0
+- mode: sandbox
+  base_url: https://publicapi.wagestream.io/pushapi-staging
+  description: Sandbox Environment
+  source: openapi/wagestream-integrations-api-openapi.yml#/servers/1
+- mode: sandbox
+  surface: SAML SSO ACS endpoint
+  url: https://api.staging.wagestream.xyz/api/v1/saml/standard
+  production_equivalent: https://api.wagestream.xyz/api/v1/saml/standard
+  source: https://connect.stream.co/docs/single-sign-on
+credentials:
+  separation: separate base path per environment, not a key prefix
+  key_header: x-api-key
+  key_prefixes_published: false
+  self_serve: false
+  issued_by: Stream Client Success Manager
+  note: >-
+    No test/live key prefix convention is published. Keys are issued per client per environment by a
+    named contact — this is a partner-onboarded API, not a self-serve sandbox.
+fixtures_and_triggers:
+- name: Simulate enrolment
+  operation: POST /testenrollments
+  path: /testenrollments
+  description: >-
+    Simulates the start of the enrolment process for one or more employees, so an integrator can exercise
+    the enrolment lifecycle end to end without a real employee installing the app.
+  params:
+    employee_ids: comma-delimited list of employee_id values to trigger enrolment for
+    pending: >-
+      Only relevant to the Enterprise and Instant Verification enrolment flows. Setting true simulates an
+      employee registering on the app and accepting terms, leaving them in Pending so the integrator can
+      poll for pending enrolments and complete them by POSTing the remaining data to /employees. Redundant
+      for the Standard enrolment flow.
+  source: openapi/wagestream-integrations-api-openapi.yml#/paths/~1testenrollments/post
+test_bank_accounts:
+  purpose: >-
+    An employee must have valid bank account details to complete enrolment. These are published dummy
+    UK accounts designed to pass Stream's validation checks (see the MODULUS_CHECK_FAILED and
+    NOT_FPS_ENABLED codes in errors/wagestream-error-codes.yml).
+  published_verbatim: true
+  source: https://connect.stream.co/docs/sending-test-data-to-stream
+  accounts:
+  - {bank: Bank of Ireland, iban: GB27BOFI90212729823529, sort_code: '902127', account_number: '29823529'}
+  - {bank: Bank of Scotland, iban: GB17BOFS80055100813796, sort_code: '800551', account_number: '00813796'}
+  - {bank: Barclays Bank, iban: GB92BARC20005275849855, sort_code: '200052', account_number: '75849855'}
+  - {bank: Citibank, iban: GB66CITI18500812098709, sort_code: '185008', account_number: '12098709'}
+  - {bank: Clydesdale Bank, iban: GB15CLYD82663220400952, sort_code: '826632', account_number: '20400952'}
+  - {bank: Lloyds TSB Bank, iban: GB76LOYD30949301273801, sort_code: '309493', account_number: '01273801'}
+  - {bank: National Westminster Bank (NatWest), iban: GB25NWBK60080600724890, sort_code: '600920', account_number: '67037135'}
+  - {bank: Nationwide Building Society, iban: GB60NAIA07011610909132, sort_code: '070116', account_number: '10909132'}
+  - {bank: Royal Bank of Scotland (RBS), iban: GB29RBOS83040210126939, sort_code: '830402', account_number: '10126939'}
+  - {bank: Santander Bank, iban: GB79ABBY09012603367219, sort_code: '090126', account_number: '03367219'}
+  - {bank: Standard Chartered Bank, iban: GB21SCBL60910417068859, sort_code: '609104', account_number: '17068859'}
+test_clocks: none published
+not_published:
+- test card numbers (this API moves wages by bank transfer, not cards)
+- key prefix convention distinguishing test from live keys
+- self-serve sandbox signup

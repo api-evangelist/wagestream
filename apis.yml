@@ -1,23 +1,132 @@
 aid: wagestream
 name: Wagestream
-description: 'Wagestream is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  Wagestream — trading as Stream since its 2025 rebrand — is a UK-founded, B Corp certified workplace
+  financial wellbeing platform that gives hourly and salaried employees earned wage access (flexible pay),
+  shift and pay tracking, workplace savings, budgeting tools, salary-deducted workplace loans, benefits
+  and state-benefit claim support, financial coaching and discounts, delivered as a mobile app funded by
+  the employer rather than the worker. Employers connect their HR, workforce management and payroll
+  systems to Stream through the Wagestream Integrations API — a small, batch-oriented REST push API over
+  employees, shifts (time and attendance), absences, off-cycle payments and Stream-generated enrolment
+  banking records — or via SFTP file feeds and browser upload into the employer administration portal.
+  The API is API-key authenticated, asynchronous (every write returns a transaction id polled through a
+  matching GET), and idempotent through an optional per-request nonce.
+image: https://stream.co/api/media/file/Home_Hero_Left.webp
 url: https://raw.githubusercontent.com/api-evangelist/wagestream/refs/heads/main/apis.yml
 x-type: company
-x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.21'
 created: '2026-08-05'
 modified: '2026-08-05'
 tags:
-- Company
-apis: []
+- financial-wellbeing
+- earned-wage-access
+- fintech
+- payroll
+- human-resources
+- workforce-management
+- time-and-attendance
+- employee-benefits
+- workplace-savings
+- hr-integrations
+- b-corp
+- united-kingdom
+apis:
+- name: Wagestream Integrations API
+  description: >-
+    Batch push API used by employers and HR/WFM/payroll vendors to feed Stream the employee, shift,
+    absence and off-cycle payment data that drives earned wage access, and to read back the
+    Stream-generated enrolment banking records that must replace an enrolled employee's bank details in
+    the payroll system. Every write is accepted asynchronously and returns a txn_id which is polled on
+    the matching GET for a per-row status. Authenticated with an x-api-key header issued by a Stream
+    Client Success Manager.
+  humanURL: https://connect.stream.co/reference
+  baseURL: https://publicapi.wagestream.io/pushapi-prod
+  tags:
+  - earned-wage-access
+  - payroll
+  - human-resources
+  - workforce-management
+  - time-and-attendance
+  - hr-integrations
+  properties:
+  - type: OpenAPI
+    url: openapi/wagestream-integrations-api-openapi.yml
+  - type: Documentation
+    url: https://connect.stream.co/docs/welcome
+  - type: APIReference
+    url: https://connect.stream.co/reference
+  - type: GettingStarted
+    url: https://connect.stream.co/docs/overview-1
+  - type: Authentication
+    url: https://connect.stream.co/docs/api-authentication-guide
+x-enrichment:
+  date: '2026-08-05'
+  status: enriched
+  artifacts_added: 18
+  pass: local-v1
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Authentication
+  url: authentication/wagestream-authentication.yml
+- type: DomainSecurity
+  url: security/wagestream-domain-security.yml
 - type: Website
-  url: https://www.hiive.com/securities/wagestream-stock
+  url: https://stream.co/en
+- type: DeveloperPortal
+  url: https://connect.stream.co/
+- type: Documentation
+  url: https://connect.stream.co/docs/welcome
+- type: APIReference
+  url: https://connect.stream.co/reference
+- type: GettingStarted
+  url: https://connect.stream.co/docs/overview-1
+- type: Support
+  url: https://help.stream.co/
+- type: Blog
+  url: https://stream.co/en/articles
+- type: GitHubOrganization
+  url: https://github.com/wagestream
+- type: SignUp
+  url: https://stream.co/en/book-a-demo
+- type: Login
+  url: https://stream.co/en-us/login
+- type: TermsOfService
+  url: https://stream.co/en/terms-of-use
+- type: PrivacyPolicy
+  url: https://stream.co/en/privacy-policy
+- type: TrustCenter
+  url: https://trust.stream.co/
+- type: Compliance
+  url: https://stream.co/en-us/stream-licenses-compliance
+- type: StatusPage
+  url: https://status.stream.co/
+- type: Integrations
+  url: https://stream.co/en/products/integrations
+- type: AgenticAccess
+  url: agentic-access/wagestream-agentic-access.yml
+- type: Conventions
+  url: conventions/wagestream-conventions.yml
+- type: Idempotency
+  url: conventions/wagestream-conventions.yml
+- type: ErrorCatalog
+  url: errors/wagestream-problem-types.yml
+- type: ErrorCodes
+  url: errors/wagestream-error-codes.yml
+- type: Lifecycle
+  url: lifecycle/wagestream-lifecycle.yml
+- type: Conformance
+  url: conformance/wagestream-conformance.yml
+- type: DataModel
+  url: data-model/wagestream-data-model.yml
+- type: Sandbox
+  url: sandbox/wagestream-sandbox.yml
+- type: Overlay
+  url: overlays/wagestream-integrations-api-overlay.yaml
+- type: LLMsTxt
+  url: llms/wagestream-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml

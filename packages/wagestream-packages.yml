@@ -1,0 +1,19 @@
+generated: '2026-08-05'
+method: searched
+source: public package registry searches
+packages: []
+note: >-
+  NO first-party client library exists for the Wagestream Integrations API. Searched npm (registry search
+  "wagestream" — zero results), PyPI (wagestream, wagestream-api, wagestream-sdk — all 404), RubyGems
+  (empty result set), Packagist (no wagestream package), crates.io (zero crates), and the docs and the
+  GitHub org github.com/wagestream, whose only public source repositories are node-db-migrate and
+  country-language (both forks of unrelated general-purpose libraries) plus statuspage (an Upptime status
+  page). The documented integration path is to call the REST endpoints directly with an x-api-key header,
+  or to use SFTP file feeds. No SDKs pointer is wired into apis.yml because there is no SDK.
+registries_searched:
+- {registry: npm, query: wagestream, results: 0}
+- {registry: pypi, queries: [wagestream, wagestream-api, wagestream-sdk], results: 0}
+- {registry: rubygems, query: wagestream, results: 0}
+- {registry: packagist, query: wagestream, results: 0}
+- {registry: crates.io, query: wagestream, results: 0}
+- {registry: github, org: wagestream, first_party_client_libraries: 0}

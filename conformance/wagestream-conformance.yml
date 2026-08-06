@@ -1,0 +1,88 @@
+generated: '2026-08-05'
+method: searched
+source: https://stream.co/en-us/stream-licenses-compliance
+derived_from:
+- openapi/wagestream-integrations-api-openapi.yml
+- https://connect.stream.co/docs/api-authentication-guide
+- https://connect.stream.co/docs/sftp-key-pairs
+- https://connect.stream.co/docs/single-sign-on
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: openapi/wagestream-integrations-api-openapi.yml declares openapi 3.0.3 with 11 operations
+- id: api-key-header-auth
+  conforms: true
+  evidence: components.securitySchemes type apiKey, in header, name x-api-key
+- id: oauth2
+  conforms: false
+  evidence: no oauth2 security scheme in the spec and no OAuth documented
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on every host
+- id: saml-2.0
+  conforms: true
+  evidence: >-
+    SP and IdP initiated SSO over SAML documented, with published production and staging ACS endpoints
+    and x509 certificate exchange — https://connect.stream.co/docs/single-sign-on
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: 4xx responses carry a description only; no application/problem+json media type in the spec
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: /.well-known/security.txt returns 404 on stream.co and connect.stream.co
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: no deprecation or sunset policy published
+- id: iso8601-dates
+  conforms: true
+  evidence: date and datetime fields are specified as ISO 8601 with regex patterns in the spec
+- id: idempotency
+  conforms: true
+  evidence: >-
+    optional request-level nonce on every write envelope returning 409 on reuse, plus natural-key upsert
+    on employee_id / shift_id / absence_id — see conventions/wagestream-conventions.yml
+- id: pagination
+  conforms: true
+  evidence: GET /enrollments exposes limit + 1-indexed page with total_records in the response envelope
+- id: uk-faster-payments
+  conforms: true
+  evidence: >-
+    the API validates that an employee bank account is FPS enabled and rejects it otherwise
+    (NOT_FPS_ENABLED in TransactionStatusResponseEnum)
+- id: uk-bank-modulus-check
+  conforms: true
+  evidence: MODULUS_CHECK_FAILED returned for sort code / account number pairs that fail modulus validation
+- id: tls-1.2-minimum
+  conforms: true
+  evidence: >-
+    SFTP and HTTPS transfer documented as TLS >= 1.2 in transit with AES-256 at rest; live TLS probe of
+    publicapi.wagestream.io and connect.stream.co returned TLSv1.3
+- id: pgp-file-encryption
+  conforms: true
+  evidence: optional PGP file-level encryption offered on the SFTP channel
+- id: ssh-public-key-auth
+  conforms: true
+  evidence: SFTP authentication is RSA public-key only, passwords not accepted
+- id: b-corp
+  conforms: true
+  evidence: 'self-declared certified B Corporation — https://connect.stream.co/docs/welcome'
+regulatory_licences:
+  jurisdiction: United States
+  published_at: https://stream.co/en-us/stream-licenses-compliance
+  register: NMLS Consumer Access
+  licences:
+  - {state: California, type: Income-Based Advances under CCFPL, regulator: Department of Financial Protection and Innovation, number: 04-CCFPL-2547041-3414304}
+  - {state: Connecticut, type: Small Loan Company License, regulator: Connecticut Department of Banking, number: SLC-2547041}
+  - {state: Indiana, type: Earned Wage Access Company, regulator: Department of Financial Institutions, number: '75393'}
+  - {state: Kansas, type: Earned Wage Access Company, regulator: Office of State Bank Commissioner, number: EWA.0000002}
+  - {state: Maryland, type: Consumer Loan License, regulator: Office of Financial Regulation, number: '2547041'}
+  - {state: Missouri, type: Earned Wage Access Company, regulator: Division of Finance, number: EWA-26-9415}
+  - {state: Nevada, type: Earned Wage Access Provider, regulator: Department of Business and Industry Financial Institutions Division, number: EWA00001}
+  - {state: South Carolina, type: Earned Wage Access Company, regulator: South Carolina Department of Consumer Affairs, number: null}
+  - {state: Utah, type: Earned Wage Access Services, regulator: Department of Commerce Division of Consumer Protection, number: 14228653-EWAS}
+  - {state: Wisconsin, type: Earned Wages Access Provider, regulator: Department of Financial Institutions, number: 2547041EWA}
+certifications_not_verified:
+  note: >-
+    SOC 2 / ISO 27001 status could not be verified. The trust center at trust.stream.co is a JavaScript
+    rendered SPA and served no certification names in HTML — see security/wagestream-trust-center.yml.
+    No certification is asserted here.

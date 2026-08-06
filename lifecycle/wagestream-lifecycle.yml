@@ -1,0 +1,64 @@
+generated: '2026-08-05'
+method: searched
+source: https://connect.stream.co/docs/welcome
+versioning:
+  scheme: spec-version + environment-path
+  current: 2.1.0
+  note: >-
+    The API version is carried in the OpenAPI info.version (2.1.0) — there is no version segment in the
+    request path and no version header. The path segment distinguishes ENVIRONMENT (pushapi-prod vs
+    pushapi-staging), not version. No published version-support or breaking-change policy was found.
+  source: openapi/wagestream-integrations-api-openapi.yml#/info/version
+environments:
+  production: https://publicapi.wagestream.io/pushapi-prod
+  sandbox: https://publicapi.wagestream.io/pushapi-staging
+status_page: https://status.stream.co/
+status_page_detail:
+  title: Stream Status
+  platform: Upptime (open-source, GitHub Actions powered)
+  repository: https://github.com/wagestream/statuspage
+  aliases:
+  - https://status.wagestream.com/
+  - https://wagestream.github.io/statuspage/
+  http_status: 200
+deprecation:
+  policy_url: null
+  sunset_header: false
+  note: >-
+    No deprecation or sunset policy is published, and no RFC 8594 Sunset/Deprecation header support is
+    documented. The only deprecation signal anywhere in the surface is a single deprecated FIELD in the
+    spec (see deprecated_fields).
+deprecated_operations: []
+deprecated_fields:
+- field: TransactionResponse.api_key
+  spec: openapi/wagestream-integrations-api-openapi.yml#/components/schemas/TransactionResponse
+  marked: deprecated true
+  note: echoed the original request key back on the response; example value is literally "deprecated"
+sla:
+  url: null
+  uptime_target: null
+  note: No public SLA or uptime target was found; Stream is contracted per employer client.
+changelog:
+  url: null
+  note: >-
+    The ReadMe project exposes a Changelog nav entry but https://connect.stream.co/changelog returns 404
+    and no dated entries are published, so no changelog/ artifact was written.
+rebrand:
+  from: Wagestream
+  to: Stream
+  evidence:
+  - wagestream.com 302s to stream.co/en-us
+  - connect.wagestream.com and developers.wagestream.co.uk 302 to connect.stream.co
+  - trust.wagestream.com 302s to trust.stream.co
+  - docs and status page are titled "Stream Connect" and "Stream Status"
+  note: >-
+    The API itself still carries the Wagestream name (title "Wagestream Integrations API", host
+    publicapi.wagestream.io, contact developers@wagestream.com), so the developer surface is
+    mid-migration — the docs are Stream-branded, the contract is Wagestream-branded.
+data_retention:
+- surface: Enrolments feed
+  rule: leavers are removed from the Enrolments file 60 days after becoming a leaver
+  source: https://connect.stream.co/docs/enrolments
+- surface: Time and attendance / absences
+  rule: up to 45 days of historical data recommended on initial load
+  source: https://connect.stream.co/docs/time-and-attendance

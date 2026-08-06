@@ -1,0 +1,69 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Wagestream Integrations API
+  version: 1.0.0
+x-generated: '2026-08-05'
+x-method: generated
+x-source: openapi/wagestream-integrations-api-openapi.yml
+extends: openapi/wagestream-integrations-api-openapi.yml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/wagestream/
+    x-apievangelist-harvested-from: https://dash.readme.com/api/v1/api-registry/h88ga8ky9x9aq8
+    x-apievangelist-docs: https://connect.stream.co/reference
+    x-apievangelist-note: >-
+      The provider has rebranded from Wagestream to Stream (stream.co). The contract still carries the
+      Wagestream name and host; the documentation is Stream-branded.
+- target: $
+  update:
+    security:
+    - name: []
+    x-apievangelist-security-note: >-
+      The spec defines the x-api-key apiKey scheme in components.securitySchemes but never applies it at
+      the document or operation level. Every operation in fact requires the key and returns 403 without
+      it, per https://connect.stream.co/docs/api-authentication-guide. This overlay applies it globally.
+- target: $.paths['/enrollments'].get
+  update:
+    operationId: get_enrollments
+    x-apievangelist-note: operationId absent in the source spec; ReadMe slug is get_enrollments
+- target: $.paths['/employees'].get
+  update:
+    operationId: get_employees
+    x-apievangelist-note: operationId absent in the source spec; ReadMe slug is get_employees
+- target: $.paths['/employees'].post
+  update:
+    operationId: post_employees
+    x-apievangelist-note: operationId absent in the source spec; ReadMe slug is post_employees
+- target: $.paths['/testenrollments'].post
+  update:
+    operationId: post_testenrollments
+    x-apievangelist-note: operationId absent in the source spec; ReadMe slug is post_testenrollments
+- target: $.info
+  update:
+    x-apievangelist-idempotency:
+      supported: true
+      mechanism: optional request-level `nonce` on every write envelope
+      conflict_status: 409
+      secondary: natural-key upsert on employee_id / shift_id / absence_id
+      artifact: conventions/wagestream-conventions.yml
+- target: $.info
+  update:
+    x-apievangelist-rate-limit:
+      limit: 300
+      window: day
+      scope: per client
+      source: https://connect.stream.co/docs/api-authentication-guide
+- target: $.info
+  update:
+    x-apievangelist-async:
+      model: submit-then-poll
+      correlation_field: txn_id
+      states: [queued, processed, failed]
+      typical_latency: under 3 minutes
+      error_registry: errors/wagestream-error-codes.yml
+- target: $.tags
+  update:
+    x-apievangelist-note: >-
+      All five declared tags (employees, enrollment, shifts, off-cycle-payment, absences) are used by at
+      least one operation, and every operation is tagged.

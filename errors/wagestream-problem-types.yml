@@ -1,0 +1,51 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/wagestream-integrations-api-openapi.yml
+format: http-status
+rfc9457: false
+note: >-
+  The Wagestream Integrations API does not emit RFC 9457 application/problem+json. Transport-level
+  failures are bare HTTP statuses whose only payload contract is the description in the OpenAPI. Row-level
+  validation failures are NOT returned on the write; they are reported asynchronously through the polled
+  TransactionStatus as enum codes — see errors/wagestream-error-codes.yml.
+problems:
+- status: 403
+  title: Forbidden - API key required
+  meaning: The request carried no x-api-key header, or the key is not valid.
+  remediation: >-
+    Send the x-api-key header on every request. Keys are issued by your Stream Client Success Manager;
+    contact support@stream.co if lost.
+  source_operations:
+  - openapi/wagestream-integrations-api-openapi.yml#post_absences
+  - openapi/wagestream-integrations-api-openapi.yml#post_shifts
+  - openapi/wagestream-integrations-api-openapi.yml#post_offcycle_payment
+  - openapi/wagestream-integrations-api-openapi.yml#post_enrollments
+  - openapi/wagestream-integrations-api-openapi.yml#GET /enrollments
+  - openapi/wagestream-integrations-api-openapi.yml#GET /employees
+  - openapi/wagestream-integrations-api-openapi.yml#POST /employees
+  - openapi/wagestream-integrations-api-openapi.yml#POST /testenrollments
+- status: 409
+  title: Nonce was already used
+  meaning: >-
+    The optional request-level nonce on this submission has already been consumed. The original request
+    was accepted; this one is a duplicate and was not reprocessed.
+  remediation: >-
+    Treat as success for the original submission. Generate a fresh nonce per distinct request. See
+    conventions/wagestream-conventions.yml#idempotency.
+  source_operations:
+  - openapi/wagestream-integrations-api-openapi.yml#post_absences
+  - openapi/wagestream-integrations-api-openapi.yml#post_shifts
+  - openapi/wagestream-integrations-api-openapi.yml#post_offcycle_payment
+  - openapi/wagestream-integrations-api-openapi.yml#POST /employees
+- status: 422
+  title: Invalid format
+  meaning: The request body did not parse against the expected envelope/record schema.
+  remediation: >-
+    Validate the payload against the schema for the endpoint (EmployeeList, ShiftList, AbsenceList,
+    off-cycle-payment-list) before submitting. Note that per-field validation failures on otherwise
+    well-formed payloads come back later in TransactionStatus, not here.
+  source_operations:
+  - openapi/wagestream-integrations-api-openapi.yml#post_absences
+  - openapi/wagestream-integrations-api-openapi.yml#post_shifts
+  - openapi/wagestream-integrations-api-openapi.yml#post_offcycle_payment
+  - openapi/wagestream-integrations-api-openapi.yml#POST /employees

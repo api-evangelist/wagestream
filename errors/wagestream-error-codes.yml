@@ -1,0 +1,60 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/wagestream-integrations-api-openapi.yml#/components/schemas/TransactionStatusResponseEnum
+summary: >-
+  Because writes are asynchronous, the meaningful error surface of this API is NOT the HTTP status — it is
+  the per-row status enum returned when polling GET <path>?txn_id=. Each returned row carries item_id (the
+  original employee_id / shift_id / absence_id) and a status[] array of these codes, keyed by the field
+  that failed.
+envelope:
+  operation: GET /employees | /shifts | /absences | /off-cycle-payments with ?txn_id=
+  schema: TransactionStatus
+  state_values: [queued, processed, failed]
+  rows_path: results[] -> TransactionResponseItemStatus
+  row_id_field: item_id
+  row_codes_field: status[]
+  field_detail: 'TransactionStatusFieldItem — free-form map of {field_name: [code, ...]}'
+error_codes:
+- code: DUPLICATE_EMAIL_ADDRESS
+  meaning: The email supplied for this employee is already in use by another employee record.
+  action: Supply a unique email per employee, preferring their personal address.
+- code: INVALID_DATETIME_FORMAT
+  meaning: A datetime field was not in the expected ISO 8601 datetime form.
+  action: Send started_at / ended_at as ISO 8601 datetimes.
+- code: INVALID_DATE_FORMAT
+  meaning: A date field was not in YYYY-MM-DD form.
+  action: Send worked_on, start_date, termination_date, started_at, ended_at as YYYY-MM-DD.
+- code: INVALID_ENUM_VALUE
+  meaning: A constrained field received a value outside its allowed set.
+  action: 'Use the documented values, e.g. shift type STANDARD | OVERTIME, absence type Paid | Unpaid.'
+- code: INVALID_INPUT
+  meaning: Generic validation failure on the named field.
+  action: Inspect the field key in the returned status map and correct the value.
+- code: INVALID_NUMBER_FORMAT
+  meaning: A numeric field was not parseable as a number.
+  action: Send salary, rate, wages, hours, amount as decimals to two places, unformatted.
+- code: MODULUS_CHECK_FAILED
+  meaning: >-
+    The supplied UK bank sort code and account number pair failed modulus validation, so the account
+    cannot be paid.
+  action: >-
+    Correct the employee's bank_sort_code / bank_account_number. For testing, use the published dummy
+    accounts in sandbox/wagestream-sandbox.yml, which are designed to pass this check.
+- code: NOT_FPS_ENABLED
+  meaning: The supplied bank account is not enabled for UK Faster Payments, so it cannot receive a stream.
+  action: Collect an FPS-capable account for the employee.
+- code: NUMBER_EXCEEDS_MAX_SIZE
+  meaning: A numeric value was above the permitted maximum.
+  action: Check the value is per-record, not an aggregate.
+- code: NUMBER_TOO_SMALL
+  meaning: A numeric value was below the permitted minimum.
+  action: Check for negative or zero values on wages, hours, rate or amount.
+- code: REQUIRED_PROPERTY
+  meaning: A required field was missing from the record.
+  action: >-
+    Populate the required fields for the record type — employees:employee_id; shifts:employee_id,
+    shift_id, worked_on, wages, hours; absences:employee_id, absence_id, type, reason;
+    off-cycle-payments:employee_id, amount, expected_date.
+- code: STRING_EXCEEDS_MAX_LENGTH
+  meaning: A string field exceeded its maximum length (256 characters on most identifier and name fields).
+  action: Truncate or map the source value before submission.

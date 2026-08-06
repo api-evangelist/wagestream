@@ -1,0 +1,12 @@
+# Stream Connect Documentation
+
+> Stream Connect provides details on how to get your employees onboarded via a simple upload to our employer portal, all the way through to getting your core HR, WFM and Payroll systems integrated.
+
+## Guides
+- [Welcome](https://connect.stream.co/docs/welcome.md)
+- [Employees](https://connect.stream.co/docs/employees.md): Employee data feed, delivering essential information for core service functionality.
+- [Absences](https://connect.stream.co/docs/absences.md): Pay-impacting leave and absence records, used to accurately reflect any deductions or adjustments in earnings.
+- [Time and Attendance](https://connect.stream.co/docs/time-and-attendance.md): Shift and hours data, encompassing worked and approved time entries,  providing information for calculating earned wages.
+- [Enrolments](https://connect.stream.co/docs/enrolments.md): Stream generated, controlling employee data flow between systems.
+- [Overview](https://connect.stream.co/docs/overview-1.md)
+- [Test banking details for Stream](https://connect.stream.co/docs/sending-test-data-to-stream.md)

@@ -1,0 +1,43 @@
+generated: '2026-08-05'
+method: probed
+source: live probes of every apis.yml and OpenAPI servers[] host
+summary: >-
+  No /.well-known/ discovery surface is published on any Stream (Wagestream) host. Probed the corporate
+  site, the developer/docs host, the legacy developer host, and the production API host. Nothing was
+  found and NO WellKnown or SecurityTxt pointer is wired into apis.yml.
+soft_404_warning: >-
+  developers.wagestream.co.uk (the legacy ReadMe docs host) answers HTTP 200 with the same 103,533-byte
+  documentation HTML shell for EVERY path, including paths that cannot exist. A control probe of
+  /.well-known/kinlane-control-xyz-9999.json returned 200 text/html at exactly that size. Every 200 from
+  that host on a /.well-known/ path is a soft 404 and MUST NOT be credited as a published document.
+hosts:
+- host: https://connect.stream.co
+  role: developer documentation (ReadMe)
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/openid-configuration, status: 404}
+  - {path: /.well-known/oauth-authorization-server, status: 404}
+  - {path: /.well-known/api-catalog, status: 404}
+  - {path: /.well-known/ai-plugin.json, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+  - {path: /llms.txt, status: 200, file: ../llms/wagestream-llms.txt}
+- host: https://publicapi.wagestream.io
+  role: production API host (OpenAPI servers[])
+  documents:
+  - {path: /.well-known/security.txt, status: 403}
+  - {path: /.well-known/agent-card.json, status: 403}
+  - {path: /.well-known/agent.json, status: 403}
+  note: host returns 403 for every unauthenticated path including a control path; API key gated
+- host: https://stream.co
+  role: corporate website
+  documents:
+  - {path: /.well-known/security.txt, status: 404}
+  - {path: /.well-known/agent-card.json, status: 404}
+  - {path: /.well-known/agent.json, status: 404}
+- host: https://developers.wagestream.co.uk
+  role: legacy developer host (soft-404 catch-all — see soft_404_warning)
+  documents:
+  - {path: /.well-known/kinlane-control-xyz-9999.json, status: 200, verdict: soft-404 control, credited: false}
+  - {path: /.well-known/security.txt, status: 200, verdict: soft-404 HTML shell, credited: false}
+  - {path: /.well-known/agent-card.json, status: 200, verdict: soft-404 HTML shell, credited: false}

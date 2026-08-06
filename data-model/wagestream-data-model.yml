@@ -1,0 +1,135 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/wagestream-integrations-api-openapi.yml
+docs: https://connect.stream.co/docs/employees
+summary: >-
+  The Wagestream Integrations data model is employee-centric and flat. employee_id — the employer's own
+  payroll number — is the single join key across every entity; there are no Stream-issued surrogate ids
+  in the public contract. Shifts, absences and off-cycle payments all belong to an employee by that key,
+  and the enrolment record is the one entity Stream generates and hands BACK to the employer.
+join_key:
+  field: employee_id
+  owner: employer (HRIS / payroll / WFM payroll number)
+  note: >-
+    Where an employee holds multiple positions, the employer sends one Employee record per assignment,
+    so the effective key is (employee_id, assignment_id).
+entities:
+- name: Employee
+  schema: Employee
+  envelope: EmployeeList
+  direction: employer -> Stream
+  key: employee_id
+  secondary_key: assignment_id
+  operations: [POST /employees, GET /employees]
+  fields_of_note:
+  - group (paying legal entity)
+  - division (organisational segment)
+  - pay_schedule_id (pay cycle the employee sits on)
+  - salary, contracted_hours, rate
+  - bank_account_number, bank_sort_code (UK account or EU IBAN/BIC)
+  - start_date, termination_date
+- name: Shift
+  schema: Shift
+  envelope: ShiftList
+  direction: employer -> Stream
+  key: shift_id
+  operations: [POST /shifts, GET /shifts]
+  purpose: the fundamental unit of earned wage calculation for variable-paid employees
+  fields_of_note: [worked_on, wages, hours, rate, 'type (STANDARD | OVERTIME)', started_at, ended_at]
+- name: Absence
+  schema: absences
+  envelope: AbsenceList
+  direction: employer -> Stream
+  key: absence_id
+  operations: [POST /absences, GET /absences]
+  purpose: pauses or adjusts salary accrual; Unpaid leave typically pauses accrual entirely
+  fields_of_note: ['type (Paid | Unpaid)', reason, started_at, ended_at]
+- name: OffCyclePayment
+  schema: off-cycle-payment
+  envelope: off-cycle-payment-list
+  direction: employer -> Stream
+  key: none (no natural id)
+  operations: [POST /off-cycle-payments, GET /off-cycle-payments]
+  fields_of_note: [amount, expected_date]
+- name: Enrollment
+  schema: enrollment
+  envelope: enrollment_list
+  direction: Stream -> employer
+  key: employee_id
+  operations: [GET /enrollments, POST /enrollments, POST /testenrollments]
+  purpose: >-
+    Carries the Stream-generated reconciliation account (bank_sort_code, bank_account_number, bank_name)
+    that must REPLACE the employee's own bank details in the employer's payroll system so wages route
+    through Stream.
+  fields_of_note:
+  - requested_on, enrolled_on, unenrolled_on
+  - 'action (NONE | PENDING | TO_COMPLETE | TO_UNENROLL)'
+  - bank_name reads "Stream"/"wagestream" once enrolled, "Unknown Bank" while pending
+- name: Transaction
+  schema: TransactionResponse / TransactionStatus
+  direction: Stream -> employer
+  key: txn_id
+  purpose: >-
+    Async processing receipt. Every write returns a txn_id; the matching GET resolves it to a state
+    (queued | processed | failed) and a per-row result keyed by the record's own natural id.
+relationships:
+- from: Shift
+  to: Employee
+  kind: belongs_to
+  via: employee_id
+- from: Absence
+  to: Employee
+  kind: belongs_to
+  via: employee_id
+- from: OffCyclePayment
+  to: Employee
+  kind: belongs_to
+  via: employee_id
+- from: Enrollment
+  to: Employee
+  kind: belongs_to
+  via: employee_id
+- from: Employee
+  to: Shift
+  kind: has_many
+  via: employee_id
+- from: Employee
+  to: Absence
+  kind: has_many
+  via: employee_id
+- from: Employee
+  to: Enrollment
+  kind: has_one
+  via: employee_id
+- from: EmployeeList
+  to: Employee
+  kind: has_many
+  via: $ref employees[]
+- from: ShiftList
+  to: Shift
+  kind: has_many
+  via: $ref shifts[]
+- from: AbsenceList
+  to: absences
+  kind: has_many
+  via: $ref absences[]
+- from: off-cycle-payment-list
+  to: off-cycle-payment
+  kind: has_many
+  via: $ref payments[]
+- from: enrollment_list
+  to: enrollment
+  kind: has_many
+  via: $ref enrollments[]
+- from: TransactionStatus
+  to: TransactionResponseItemStatus
+  kind: has_many
+  via: $ref results[]
+- from: TransactionResponseItemStatus
+  to: Employee|Shift|absences
+  kind: belongs_to
+  via: item_id (echoes the record's own natural key)
+id_prefixes:
+  note: >-
+    Ids are supplied by the employer, not minted by Stream, so there is no id-prefix convention. Spec
+    examples use EMPL_001ABC for employees and LOA_0001 for absences, but these are illustrative only.

@@ -1,0 +1,69 @@
+generated: '2026-08-05'
+method: derived
+status: candidate
+source: openapi/wagestream-integrations-api-openapi.yml
+note: >-
+  Wagestream/Stream publishes NO MCP server. Searched the developer documentation and llms.txt at
+  connect.stream.co, the GitHub org github.com/wagestream, npm (no @modelcontextprotocol or wagestream
+  package of any kind), and the public MCP registries; nothing exists, and no /mcp or /sse endpoint
+  answered on connect.stream.co, stream.co or publicapi.wagestream.io. The tools below are a CANDIDATE
+  surface derived one-per-operation from the harvested OpenAPI — what an MCP server for this API COULD
+  expose, with each tool's real input schema inherited from the referenced operation's parameters and
+  requestBody. This is a design artifact, not a provider claim: NO MCPServer pointer is wired into
+  apis.yml, and none should be until Stream actually ships one. No tool crosswalk is emitted for the same
+  reason — there is no published tool surface to bind.
+server: null
+transport: null
+url: null
+auth:
+  scheme: apiKey
+  header: x-api-key
+  note: any future MCP server would carry the same client-scoped key; there is no OAuth surface
+tools:
+- name: upsert_employees
+  description: Insert or update a batch of employees in Stream.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#POST /employees
+  consequence: write
+- name: get_employee_transaction_status
+  description: Retrieve the per-row processing status of a previous employee upsert, by txn_id.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#GET /employees
+  consequence: read
+- name: upsert_shifts
+  description: Insert or update worked shifts so earned wages become available to employees.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#post_shifts
+  consequence: write
+- name: get_shift_transaction_status
+  description: Retrieve the per-row processing status of a previous shift submission, by txn_id.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#get_shifts
+  consequence: read
+- name: upsert_absences
+  description: Insert or update pay-impacting absence records that pause or adjust salary accrual.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#post_absences
+  consequence: write
+- name: get_absence_transaction_status
+  description: Retrieve the per-row processing status of a previous absence submission, by txn_id.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#get_absences
+  consequence: read
+- name: submit_off_cycle_payments
+  description: Notify Stream of one or more off-cycle payments for an employee.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#post_offcycle_payment
+  consequence: physical
+- name: get_off_cycle_payment_status
+  description: Retrieve the per-row processing status of a previous off-cycle payment submission.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#get_expenses
+  consequence: read
+- name: list_enrollments
+  description: >-
+    List employee enrolment records, including the Stream-generated reconciliation bank details that must
+    replace the employee's own account in payroll. Supports limit/page paging and changes_only/banking_only
+    filters.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#GET /enrollments
+  consequence: read
+- name: complete_enrollment
+  description: Notify Stream to complete the enrolment for a named employee.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#post_enrollments
+  consequence: write
+- name: simulate_enrollment
+  description: Sandbox only. Simulate the start of the enrolment process for a list of employees.
+  source_operation: openapi/wagestream-integrations-api-openapi.yml#POST /testenrollments
+  consequence: write

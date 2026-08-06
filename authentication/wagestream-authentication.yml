@@ -1,0 +1,15 @@
+generated: '2026-08-05'
+method: derived
+source: openapi/wagestream-integrations-api-openapi.yml
+summary:
+  types:
+  - apiKey
+  api_key_in:
+  - header
+schemes:
+- name: name
+  type: apiKey
+  in: header
+  parameter: x-api-key
+  sources:
+  - openapi/wagestream-integrations-api-openapi.yml

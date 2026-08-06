@@ -1,0 +1,25 @@
+generated: '2026-08-05'
+method: probed
+probe: true
+url: https://trust.stream.co/
+aliases:
+- https://trust.wagestream.com/
+platform: Hexafort Trust Center
+certifications: []
+note: >-
+  Stream (Wagestream) publishes a trust center at trust.stream.co, linked from the footer of stream.co,
+  and trust.wagestream.com 302s to it. The page is a client-side rendered single-page application
+  (Hexafort) whose content is loaded from https://secure.hexafort.io/api/v1/orbit after JavaScript
+  execution, so no certification names could be read from the served HTML. certifications[] is left
+  EMPTY deliberately rather than guessed — presence of the trust center is verified, its contents are
+  not machine-readable. Named regulatory licences ARE published in plain HTML at the separate licences
+  page captured in conformance/wagestream-conformance.yml.
+evidence:
+- source: https://trust.wagestream.com/
+  http_status: 200
+  final_url: https://trust.stream.co/
+  content_type: text/html
+  title: Hexafort Trust Center
+- source: https://secure.hexafort.io/api/v1/orbit
+  http_status: 200
+  note: API root reachable; no anonymous per-tenant trust-center endpoint found

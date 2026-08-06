@@ -1,0 +1,916 @@
+openapi: 3.0.3
+info:
+  title: Wagestream Integrations API
+  version: 2.1.0
+  description: -| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream
+    to enable your employees to become more financial resilient
+  contact:
+    name: Wagestream Developer
+    email: developers@wagestream.com
+    url: https://developers.wagestream.com
+servers:
+- url: https://publicapi.wagestream.io/pushapi-prod
+  description: Production Environment
+- url: https://publicapi.wagestream.io/pushapi-staging
+  description: Sandbox Environment
+tags:
+- name: employees
+  description: Operations relating to employees
+- name: enrollment
+  description: Operations relating to enrolling employees in Wagestream
+- name: shifts
+  description: Operations relating to Shifts
+- name: off-cycle-payment
+  description: Operations relating to off-cycle payments
+- name: absences
+  description: Operations relating to absences
+components:
+  securitySchemes:
+    name:
+      type: apiKey
+      name: x-api-key
+      in: header
+  schemas:
+    absences-list:
+      type: object
+      title: Absences List
+      properties:
+        absences:
+          type: array
+          items:
+            $ref: '#/components/schemas/absences'
+        nonce:
+          type: string
+          description: An optional nonce to prevent duplicate submissions of the same api request
+    absences:
+      type: object
+      title: Absences
+      properties:
+        employee_id:
+          type: string
+          description: This is typically typically the unique identifier for the employee across your many HR/WFM/Payroll
+            systems, it's typically an employees payroll number, or similar
+          example: EMPL_001ABC
+          maxLength: 256
+        absence_id:
+          type: string
+          description: A unique ID linked to a specific absence record.
+          example: LOA_0001
+          maxLength: 256
+        type:
+          type: string
+          description: The type of leave an employee is on - expected values are “Paid” and “Unpaid”.
+          example: PAID
+          maxLength: 246
+        reason:
+          type: string
+          description: The category of leave an employee is on - for example; Unauthorised, Training, Disciplinary, Sabbatical,
+            Maternity, Jury Service, Long Term Sick.
+          example: Unauthorised
+          maxLength: 256
+        started_at:
+          type: string
+          description: The day the leave of absence starts
+          example: '2022-01-03'
+          pattern: ^\d{4}-\d{2}-\d{2}$
+        ended_at:
+          type: string
+          description: DThe day the leave of absence ends
+          example: '2022-01-10'
+          pattern: ^\d{4}-\d{2}-\d{2}$
+      required:
+      - employee_id
+      - absence_id
+      - type
+      - reason
+    off-cycle-payment-list:
+      type: object
+      title: Off-cycle Payment List
+      properties:
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/off-cycle-payment'
+        nonce:
+          type: string
+          description: An optional nonce to prevent duplicate submissions of the same api request
+      required:
+      - off-cycle-payment
+    off-cycle-payment:
+      type: object
+      title: Off-cycle Payment
+      properties:
+        employee_id:
+          type: string
+          description: Unique ID within your HRIS/Payroll/WFM of this employee
+          example: EMPL_001ABC
+          maxLength: 256
+        amount:
+          type: number
+          description: Total amount to two decimal places
+          example: 250.23
+        expected_date:
+          type: string
+          description: The date for which the expense is expected to be transferred
+          example: '2021-03-28'
+      required:
+      - employee_id
+      - amount
+      - expected_date
+    enrollment:
+      type: object
+      description: An enrollment record describing the enrollment status of an employee
+      properties:
+        employee_id:
+          type: string
+          description: The unique reference of the employee, typically payroll number
+          example: EMPL_001ABC
+        requested_on:
+          type: string
+          description: Date the employee requested to enroll
+          format: date
+          example: '2021-03-01'
+        enrolled_on:
+          type: string
+          description: Date the employee completed enrollment to Wagestream
+          format: date
+          example: '2021-03-01'
+        unenrolled_on:
+          type: string
+          format: date
+          example: '2021-03-28'
+          description: Date the employee unenrolled, or opted out
+        bank_sort_code:
+          description: The UK bank sortcode, or BIC (for EU based clients) which needs to be imported into your payroll system
+            for this employee
+          type: string
+          format: number
+          example: '309197'
+        bank_account_number:
+          type: string
+          format: number
+          description: The UK bank sortcode, or IBAN (for EU based clients) which needs to be imported into your payroll system
+            for this employee
+          example: '00503034'
+        bank_name:
+          type: string
+          description: 'If the employee is enrolled in Wagestream, this will read "wagestream",
+
+
+            If the employee is enrolling and we have not yet received their personal bank account information from your systems,
+            this will be "Unknown Bank" in all other cases it will read the bank name of their personal bank account information'
+          example: Lloyds Bank
+        action:
+          type: string
+          example: TO_UNENROLL
+          enum:
+          - NONE
+          - PENDING
+          - TO_COMPLETE
+          - TO_UNENROLL
+          description: "An indicator that Wagestream requires you to perform an action for this specific enrollment\n\n`NONE`\
+            \ - indicates that no update or action is required to your systems for this enrollment\n`PENDING` - indicates\
+            \ that the employee has requested to enrol in Wagestream, and we are awaiting their bank_account_number and bank_account_sortcode\
+            \ to be supplied to us to complete enrolment\n`TO_COMPLETE` - indicates we need you to update their bank account\
+            \ information in your systems with the provided account details from Wagestream\n`TO_UNENROLL` - indicates that\
+            \ the employee is no longer eligible to participate in the Wagestream service through either:\n  Leaving employment\n\
+            \  Opting out of the service\n  Been forcibly disabled from the service\n\nThe action to take when receiving this\
+            \ action in your systems is to update the Bank account information\nas Wagestream would now be supplying their\
+            \ personal bank account information back to you."
+        state:
+          type: string
+          example: OPTOUT
+          enum:
+          - PENDING
+          - ENROLLED
+          - ACTIVE
+          - DISABLED
+          - OPTOUT
+          description: '- PENDING   = An employee has requested to enrol in Wagestream but we are awaiting their personal
+            banking details, or for an update to their banking details with their Wagestream account
+
+            - ENROLLED  = An employee has successfully enrolled
+
+            - ACTIVE    = An employee has successfully enrolled and has made one or more transaction with the service
+
+            - DISABLED  = An employee has been disabled from the service
+
+            - OPTOUT    = An employee has chosen, or been forcibly opted out of the service         '
+    enrollment_list:
+      type: object
+      title: activation_list
+      properties:
+        enrollments:
+          type: array
+          items:
+            $ref: '#/components/schemas/enrollment'
+        total_records:
+          type: integer
+          description: the total rows available
+          example: 3202
+        page:
+          type: integer
+          description: the current page of results, it is indexed at 1, not 0
+          example: 1
+    Employee:
+      type: object
+      required:
+      - employee_id
+      properties:
+        employee_id:
+          type: string
+          description: Unique ID within your HRIS/Payroll/WFM of this employee
+          example: EMPL_001ABC
+          maxLength: 256
+        name:
+          type: string
+          description: Friendly name for the employee e.g Daffy Duck
+          maxLength: 256
+          example: Wile E. Coyote
+        email:
+          type: string
+          description: The employees contact email address to receive awareness communication & sign-in notifications.
+          maxLength: 256
+          example: wile.e@coyote.com
+        mobile_number:
+          type: string
+          description: The employees mobile number. Ideally the input should be sanitised to +{countrycode}{number} e.g +447976123123
+            you should ensure removing any spaces, dashes in the number
+          maxLength: 256
+          default: ''
+          example: '+447976123123'
+        group:
+          type: string
+          description: The legal entity which the employee works for, e.g you may have employees that work for multiple businesses,
+            you may be doing the integration on behalf of Acme Group, but employees who work for the logistics business will
+            be employed by Acme Logistics
+          maxLength: 256
+          default: ''
+          example: Acme Anvils Ltd
+        division:
+          type: string
+          description: Division is synonymous with department, it's another organisational unit and way to segment employees
+            within Wagestream.
+          maxLength: 256
+          default: ''
+          example: Unit 5, Warehouse
+        assignment_id:
+          type: string
+          description: If an employee works multiple positions, contracts or assignments populate this field you will need
+            to send us 1 employee record per assignment with the assignment_id populated
+          default: null
+          example: null
+        pay_schedule_id:
+          type: string
+          description: "A unique identifier relating to the pay schedule an employee is assigned to, for example you may have\
+            \ 1 group of employees on a weekly paycycle, \nbut another on a monthly, you can use this field to tell us which\
+            \ pay-cycle/schedule the employee is on"
+          example: monthly-5-1
+          default: null
+        start_date:
+          type: string
+          description: The date in which the main contract, or assignment for this employee starts
+          example: '2021-05-22'
+          default: ''
+        termination_date:
+          type: string
+          default: ''
+          example: '2021-08-23'
+          maxLength: 10
+          description: Synonymous with leaving date, the date the main contract or assignment for this employee ends. This
+            information is used to offboard and unenrol an employee in Wagestream
+        salary:
+          type: number
+          example: '18000'
+          description: Gross salary amount, decimal to two decimal places
+        salary_frequency:
+          type: string
+          description: 'Set the frequency which the salary value pruports to e.g if the value in the salary field is monthly
+            gross salary figure, set the value here to M, by default it is set to A for an annual gross salary figure.
+
+
+            R = Hourly
+
+            D = Daily
+
+            W = Weekly
+
+            F = Fortnightly
+
+            L = Lunar
+
+            M = Monthly
+
+            Q = Quarterly
+
+            H = Half Yearly
+
+            A = Annually
+
+            '
+          enum:
+          - H
+          - D
+          - W
+          - F
+          - M
+          - L
+          - Q
+          - H
+          - A
+          default: A
+        contracted_hours:
+          type: number
+          description: A decimal value (2 decimal places) representing the number of contracted hours for a defined period,
+            which by default is monthly, but can be overriden using the salary_frequency column. This field is only required
+            if you have employees on contracted hours and are using the rate field
+          example: '32'
+          default: ''
+        rate:
+          type: number
+          description: A decimal value (2 decimal places) which represents the base/default hourly rate for this employee
+          example: '11.25'
+          default: ''
+        bank_account_number:
+          type: number
+          description: 'The employees UK Bank primary account number which is used to receive their salary, or EU IBAN number '
+          example: '12345678'
+          default: ''
+        bank_sort_code:
+          type: string
+          description: 'The employees UK sortcode (8 digits without the dashes representing a UK bank sortcode
+
+
+            or a EU BIC code
+
+
+            Please note we do not support UK building society roll numbers'
+          example: '309197'
+          default: ''
+        split_pay:
+          type: boolean
+          description: Does this employee have their salary dispersed through multiple bank accounts?
+          example: false
+        split_pay_percentage:
+          type: number
+          description: Optional, the percentage of salary (to two decimal places) paid to their primary bank account
+          example: 50
+          default: null
+        paused:
+          type: string
+          description: "Possible Values are: \n  Y for paused (employee cannot access Wages), \n  S for paused and salary\
+            \ accrual stopped, \n  N for unpaused"
+          enum:
+          - Y
+          - S
+          - N
+          maxLength: 1
+          example: Y
+          default: ''
+        paused_until:
+          type: string
+          description: Date, in ISO86001 format
+          maxLength: 10
+          example: '2021-04-20'
+          default: A date in the future until which to pause the employee from being able to access their earnings
+        paused_reason:
+          type: string
+          description: Describe the reason why you've needed to pause this employee, typical values include - sickness, suspension,
+            holiday, absent
+          maxLength: 256
+          example: sickness
+          default: ''
+        max_transfer_percentage:
+          type: integer
+          description: Adjust the maximum percentage of earned wages an employee may access, this property will not override
+            the company default setting which is typically 50% of earnings. If you want an employee to only have access to
+            25% of earnings, then set to 25
+          maxLength: 2
+          example: '50'
+          default: ''
+        verification_field_1:
+          type: string
+          description: SHA256 hashed value of a pre-agreed piece of employee data which can be used to validate the employee
+            on registration
+          default: ''
+        verification_field_2:
+          type: string
+          description: SHA256 hashed value of a pre-agreed piece of employee data which can be used to validate the employee
+            on registration
+          default: ''
+        verification_field_3:
+          type: string
+          description: SHA256 hashed value of a pre-agreed piece of employee data which can be used to validate the employee
+            on registration
+          default: ''
+        properties:
+          type: object
+          description: Properties can be used to send wagestream any additional meta data or fields on an employee without
+            being bound by the core field definition
+          properties:
+            originated_at:
+              type: string
+              format: datetime
+              example: '2021-01-02T00:32:12Z'
+              description: The date and time (in ISO 8601 YYYY-MM-DDTHH:MM:SS) of the time the record was generated by your
+                system, this helps Wagestream detect when an update for an employee record has occured out of order with one
+                another. e.g two successive updates of the same employee is received out of sync
+    Shift:
+      type: object
+      description: For variable paid employees a "shift" tells Wagestream how much wages an employee has earned, and when
+        they earned it
+      required:
+      - employee_id
+      - shift_id
+      - worked_on
+      - wages
+      - hours
+      properties:
+        employee_id:
+          type: string
+          description: Unique ID within your HRIS/Payroll/WFM of this employee
+          example: EMPL_001ABC
+          maxLength: 256
+        shift_id:
+          description: A unique identifier for this shift, it helps de-duplicate multiple submissions of the same shift data
+          type: string
+          example: 1203i3-aiasd1dnas90dh1d
+        worked_on:
+          description: Date the shift took place and will be paid for - format is in ISO 8601 format, e.g YYYY-MM-DD
+          type: string
+          format: date
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          example: '2021-08-27'
+        started_at:
+          type: string
+          format: datetime
+          pattern: ^\d{4}-\d{2}-\d{2}$ \d{2}:\d{2}:\d{2}
+          description: For informational purposes only to show when the employees actual start date and time of a shift was
+          example: '2021-08-27 21:32:11'
+        ended_at:
+          type: string
+          format: datetime
+          pattern: ^\d{4}-\d{2}-\d{2}$ \d{2}:\d{2}:\d{2}
+          description: For informational purposes only to show when the employees actual end date and time of a shift was
+          example: '2021-08-28 02:32:12'
+        wages:
+          type: number
+          description: Total GROSS wage, to 2 decimal places
+          example: 75.25
+        hours:
+          type: number
+          example: 7
+          description: Number of hours worked, can be float or integer, 2 decimal places
+        rate:
+          type: number
+          example: 10.75
+          description: The rate of pay for this shift, decimal to 2 places
+        currency:
+          type: string
+          description: ISO currency code, i.e. GBP only required if you pay your workforce in multiple currencies
+          format: currency
+          pattern: ^[A-Z]{3}$
+          default: GBP
+        info:
+          type: string
+          description: A small textual description of the shift work e.g `Warehouse shift abc`
+          example: Distribution team a shift
+          default: ''
+        type:
+          type: string
+          description: Defines if this shift was standard, or overtime - if it's overtime we can configure the system to allow
+            more access to overtime that standard
+          default: STANDARD
+          enum:
+          - STANDARD
+          - OVERTIME
+    ShiftList:
+      type: object
+      properties:
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+        nonce:
+          type: string
+          example: aosidjsd12312jdsojd
+          default: null
+    EmployeeList:
+      properties:
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+        nonce:
+          type: string
+          description: supply a unique identifier for the request to ensure this request is used/consumed only once.
+          default: ''
+    AbsenceList:
+      type: object
+      properties:
+        absences:
+          type: array
+          items:
+            $ref: '#/components/schemas/absences'
+        nonce:
+          type: string
+          example: aosidjsd12312jdsojd
+          default: null
+    TransactionResponse:
+      type: object
+      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be
+        able to request a status update on the state of processing for this request
+      properties:
+        ok:
+          type: boolean
+          description: describes whether the data was scheduled for processing successfully, processing usually occurs within
+            3 minutes of submission
+        rows:
+          type: integer
+          description: The number of employee rows received in the request which have been scheduled for processing
+          example: 232
+        txn_id:
+          type: string
+          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status
+            of processing
+          example: asbd121@EASDmaosdfh92
+          maxLength: 32
+        api_key:
+          type: string
+          description: the original key used to make the API request with
+          example: deprecated
+          deprecated: true
+    TransactionStatus:
+      type: object
+      description: The structure in which results are reported
+      properties:
+        state:
+          type: string
+          example: failed
+          description: 'queued = The data was received and is pending final processing
+
+            processed = The data was received and processed, and will now be visible in your partner portal
+
+            failed = The data was received, but an error occurred while processing. Check your partner portal for further
+            details.'
+          enum:
+          - queued
+          - processed
+          - failed
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponseItemStatus'
+    TransactionResponseItemStatus:
+      type: object
+      description: A line by line explanation of
+      properties:
+        item_id:
+          type: string
+          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift,
+            it will be the shift_id
+          example: EMPL_001ABC
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionStatusFieldItem'
+          description: A combination of warnings/errors which may have affected the import of this record
+          example:
+          - INVALID_DATETIME_FORMAT
+          - INVALID_ENUM_VALUE
+    TransactionStatusFieldItem:
+      type: object
+      additionalProperties: true
+      example:
+        employee_id:
+        - asdasd
+    TransactionStatusResponseEnum:
+      type: string
+      enum:
+      - DUPLICATE_EMAIL_ADDRESS
+      - INVALID_DATETIME_FORMAT
+      - INVALID_DATE_FORMAT
+      - INVALID_ENUM_VALUE
+      - INVALID_INPUT
+      - INVALID_NUMBER_FORMAT
+      - MODULUS_CHECK_FAILED
+      - NOT_FPS_ENABLED
+      - NUMBER_EXCEEDS_MAX_SIZE
+      - NUMBER_TOO_SMALL
+      - REQUIRED_PROPERTY
+      - STRING_EXCEEDS_MAX_LENGTH
+paths:
+  /absences:
+    post:
+      tags:
+      - absences
+      summary: Inserts or updates one or more absences
+      description: Absences will allow you to control when your employees stop accumulating a balance in Wagestream, ensuring
+        they only have access to salary that has been earnt.
+      operationId: post_absences
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '403':
+          description: Forbidden - API key required
+        '409':
+          description: Nonce was already used
+        '422':
+          description: Invalid format
+      requestBody:
+        description: An array of `absence` objects, submitted as `absences` with an optional `nonce`
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AbsenceList'
+    get:
+      tags:
+      - absences
+      summary: Check status of a previous POST
+      description: A successful POST to `/absences returns a `txn_id`, which is needed to query the status of the operation
+      operationId: get_absences
+      parameters:
+      - name: txn_id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: ID of the transaction, as returned by the `POST`
+        example: asbd121@EASDmaosdfh92
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+  /enrollments:
+    get:
+      tags:
+      - enrollment
+      summary: Returns the enrollment status of your employees
+      description: With this endpoint you can detect which employees have enrolled, or requested to enrol. You can then use
+        this information to choose how/whether you send us further data
+      parameters:
+      - in: query
+        name: changes_only
+        schema:
+          type: boolean
+          example: false
+          default: null
+        required: false
+        description: If true, will return only records which require you to perform an action on.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          format: int32
+          default: null
+        required: false
+        example: 100
+        description: If >0, will only return a maximum number of records, ordered by requested_on asc (so, the 'oldest' records
+          first)
+      - in: query
+        name: page
+        schema:
+          type: integer
+          format: int32
+          default: 1
+        required: false
+        example: 1
+        description: Enables paging through the results in conjunction with the `limit` parameter
+      - in: query
+        name: banking_only
+        schema:
+          type: boolean
+          default: null
+          example: false
+          minimum: 0
+        required: false
+        description: If true, will return only employees with banking details leaving only employees that have been fully
+          enrolled.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/enrollment_list'
+        '403':
+          description: Forbidden - API key required or invalid
+    post:
+      operationId: post_enrollments
+      deprecated: true
+      tags:
+      - enrollment
+      summary: Notifies Wagestream to complete the enrollment for an employee
+      description: When an employee is approved for activation, and their bank details have changed in the employer's payroll
+        system, POST to this endpoint to inform Wagestream. The employee will immediately be able to transfer any eligible
+        wages.
+      parameters:
+      - name: employee_id
+        in: query
+        required: true
+        schema:
+          type: string
+          example: EMPL_001ABC
+        description: ID of the employee to activate
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden - API key required / forbidden
+  /shifts:
+    get:
+      tags:
+      - shifts
+      summary: Check status of a previous POST
+      description: A successful POST to `/shifts` returns a `txn_id`, which is needed to query the status of the operation
+      operationId: get_shifts
+      parameters:
+      - name: txn_id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: ID of the transaction, as returned by the `POST`
+        example: asbd121@EASDmaosdfh92
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+    post:
+      tags:
+      - shifts
+      summary: Inserts or updates one or more shifts
+      description: For variable paid employees the "shift" is the fundamental building block of Wagestream. Wagestream uses
+        shift information to calculate the portion of earnings an employee has access too
+      operationId: post_shifts
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '403':
+          description: Forbidden - API key required
+        '409':
+          description: Nonce was already used
+        '422':
+          description: Invalid format
+      requestBody:
+        description: An array of `shift` objects, submitted as `shifts` with an optional `nonce`
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShiftList'
+  /testenrollments:
+    post:
+      summary: Simulate the start of the enrollment process for an employee
+      description: Only for use when testing, not available on production. This endpoints enables you to take an employee
+        which you've previously uploaded and trigger the start of the enrollment process for, this enables you to test the
+        end to end process for enrollments
+      tags:
+      - enrollment
+      parameters:
+      - name: employee_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        description: Comma delimited list of employee_id's to trigger the enrollment process with
+        required: true
+        examples:
+          oneId:
+            summary: Example of a single employee_id
+            value:
+            - EMPL001
+          multipleIds:
+            summary: Example of multiple employee_id's
+            value:
+            - EMPL001
+            - EMPL003
+            - EMPL02321
+      - name: pending
+        in: query
+        schema:
+          type: boolean
+          nullable: true
+        description: "This setting is only useful if you are implementing the `Enterprise` or `Instant Verification` enrolment\
+          \ flows. If you are using the `Standard` Enrolment flow, then this parameter is redundant.\n\nIncluding and setting\
+          \ pending to `true` simulates an employee registering on the app, and them then \naccepting terms and conditions.\
+          \ At this stage they are in Pending\n\nAfter polling for pending enrollments, and seeing an employee requesting\
+          \ to enroll - you would\nsubmit, via POSTing to the employees end point the remaining information required to complete\n\
+          their enrolment."
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden - API key invalid
+  /employees:
+    get:
+      tags:
+      - employees
+      summary: Retrieve the status of your insert/update operation
+      parameters:
+      - in: query
+        name: txn_id
+        description: Supply the transaction id you recieved in the response from a POST to the employees endpoint
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: ac506743-fa12-4f2e-9ded-dfe1064ceaec
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example: '{ "state": "failed", "results": [ { "item_id": "EMPL_001ABC", "status": [ {"bank_sort_code": ["MODULUS_CHECK_FAILED","NOT_FPS_ENABLED"]},
+                {"start_date": ["INVALID_DATE_FORMAT"]}         ] }, { "item_id": "EMPL_007SHAKENNOTSTIRRED", "status": [
+                {"verification_field_3": ["REQUIRED_PROPERTY"]}, {"start_date": ["INVALID_DATE_FORMAT"]}         ] } ] }'
+        '403':
+          description: Forbidden - API Key not recognised/invalid
+      description: ''
+    post:
+      summary: Insert and/or Update (Upsert) your employees into Wagestream
+      tags:
+      - employees
+      requestBody:
+        description: An array of employee objects, submitted as employees with an optional nonce
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeList'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '403':
+          description: Forbidden - the API key is invalid
+        '409':
+          description: Conflict - the nonce value has already been used
+        '422':
+          description: Unprocessable Entity - it's likely the payload json did not validate
+  /off-cycle-payments:
+    post:
+      operationId: post_offcycle_payment
+      tags:
+      - off-cycle-payment
+      summary: Notify Wagestream of one or more offcycle payment for an employee
+      description: Inserts expenses to be expected by employee at specified dates.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '403':
+          description: API key required
+        '409':
+          description: Nonce was already used
+        '422':
+          description: Invalid format
+      requestBody:
+        description: An array of `Offcycle Payment` objects, submitted as `payments` with an optional `nonce`
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/off-cycle-payment-list'
+    get:
+      tags:
+      - off-cycle-payment
+      summary: Check status of a previous submission of Off-cycle payments
+      description: A successful POST to `/off-cycle-payments` returns a `txn_id`, which is needed to query the status of the
+        operation
+      operationId: get_expenses
+      parameters:
+      - name: txn_id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The transaction ID, as returned by the original `POST` request
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'

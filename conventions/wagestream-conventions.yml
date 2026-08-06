@@ -1,0 +1,121 @@
+generated: '2026-08-05'
+method: searched
+source: https://connect.stream.co/docs/api-authentication-guide
+derived_from:
+- openapi/wagestream-integrations-api-openapi.yml
+- https://connect.stream.co/reference
+summary: >-
+  The Wagestream Integrations API is a small, batch-oriented, write-mostly push API. Every write accepts
+  an ARRAY of records wrapped in a named envelope, is processed ASYNCHRONOUSLY, and returns a txn_id that
+  the caller polls on the matching GET to retrieve a per-row status. Duplicate submission is defended
+  twice over: an optional request-level `nonce` (409 on reuse) and a natural business key on every record
+  (employee_id, shift_id, absence_id) which makes writes upsert rather than insert.
+authentication:
+  style: api-key-header
+  header: x-api-key
+  issued_by: Stream Client Success Manager
+  no_key_response: 403 Forbidden
+  docs: https://connect.stream.co/docs/api-authentication-guide
+  artifact: authentication/wagestream-authentication.yml
+idempotency:
+  supported: true
+  mechanisms:
+  - kind: request-nonce
+    field: nonce
+    location: request body (sibling of the record array)
+    scope: per request
+    optional: true
+    on_reuse: HTTP 409 "Nonce was already used"
+    applies_to:
+    - post_shifts
+    - post_absences
+    - post_offcycle_payment
+    - POST /employees
+    spec_evidence: components.schemas.EmployeeList.nonce — "supply a unique identifier for the request
+      to ensure this request is used/consumed only once."
+  - kind: natural-key-upsert
+    scope: per record
+    keys:
+      employees: employee_id (+ assignment_id where an employee holds multiple assignments)
+      shifts: shift_id
+      absences: absence_id
+    behaviour: >-
+      Re-submitting a record with an existing key UPDATES it; a new key CREATES it. Documented for
+      absences as "Repeat entries with the same absence_id will cause an update"; the shift_id field is
+      described in the spec as existing to "de-duplicate multiple submissions of the same shift data".
+  retention: not published
+async_processing:
+  model: submit-then-poll
+  write_response_schema: TransactionResponse
+  correlation_field: txn_id
+  status_operation: GET on the same path with ?txn_id=
+  status_schema: TransactionStatus
+  states: [queued, processed, failed]
+  typical_latency: processing usually occurs within 3 minutes of submission
+  per_row_results: TransactionStatus.results[] -> TransactionResponseItemStatus{item_id, status[]}
+pagination:
+  supported: true
+  scope: GET /enrollments only
+  style: page-and-limit
+  params:
+    limit: maximum records returned, ordered by requested_on ascending (oldest first)
+    page: 1-indexed page number, used with limit
+  response_fields:
+    total_records: total rows available
+    page: current page (1-indexed)
+  filters:
+    changes_only: return only records requiring an action
+    banking_only: return only fully enrolled employees that have banking details
+  note: The other GET operations are transaction-status lookups keyed by txn_id and are not paginated.
+batching:
+  supported: true
+  envelopes:
+    POST /employees: employees[]
+    POST /shifts: shifts[]
+    POST /absences: absences[]
+    POST /off-cycle-payments: payments[]
+  guidance: >-
+    Documented best practice is to batch — "sending 30 shifts in one API every 15 minutes rather than
+    sending 1 shift every one minute" — because the rate limit is per client per day, not per record.
+rate_limiting:
+  published_limit: 300 requests per day
+  scope: per client (not per endpoint)
+  negotiable: true
+  signalling_headers: none documented
+  docs: https://connect.stream.co/docs/api-authentication-guide
+error_envelope:
+  style: http-status-plus-transaction-status
+  problem_json: false
+  note: >-
+    Transport-level failures are bare HTTP statuses with a description only (403/409/422) — there is no
+    RFC 9457 application/problem+json body. Business/validation failures are NOT returned on the write at
+    all; they surface asynchronously in the polled TransactionStatus as a per-row enum code.
+  artifacts:
+  - errors/wagestream-problem-types.yml
+  - errors/wagestream-error-codes.yml
+data_conventions:
+  dates: ISO 8601 date (YYYY-MM-DD)
+  datetimes: ISO 8601 datetime
+  money: decimal to 2 places, gross
+  string_max_length: 256 characters on most identifier and name fields
+  phone: E.164-style +{countrycode}{number}, no spaces or dashes
+sync_guidance: >-
+  Documented best practice is a full data sync at least once per day even when sending deltas, so a
+  failed incremental change is self-healing on the next full sync.
+versioning:
+  scheme: environment-path + spec version
+  current: 2.1.0
+  environments:
+    production: https://publicapi.wagestream.io/pushapi-prod
+    sandbox: https://publicapi.wagestream.io/pushapi-staging
+  artifact: lifecycle/wagestream-lifecycle.yml
+request_tracing:
+  request_id_header: none documented
+  correlation: txn_id returned on every write
+alternative_channels:
+- kind: SFTP
+  auth: RSA public-key authentication (no passwords)
+  encryption: TLS >= 1.2 in transit, AES-256 at rest, optional PGP file-level encryption
+  docs: https://connect.stream.co/docs/sftp-key-pairs
+- kind: Browser upload
+  docs: https://connect.stream.co/docs/overview-1
