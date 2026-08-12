@@ -31,26 +31,88 @@ tags:
 - b-corp
 - united-kingdom
 apis:
-- name: Wagestream Integrations API
-  description: >-
-    Batch push API used by employers and HR/WFM/payroll vendors to feed Stream the employee, shift,
-    absence and off-cycle payment data that drives earned wage access, and to read back the
-    Stream-generated enrolment banking records that must replace an enrolled employee's bank details in
-    the payroll system. Every write is accepted asynchronously and returns a txn_id which is polled on
-    the matching GET for a per-row status. Authenticated with an x-api-key header issued by a Stream
-    Client Success Manager.
+- aid: wagestream:wagestream-absences-api
+  name: Wagestream Absences API
+  description: Operations relating to absences
   humanURL: https://connect.stream.co/reference
   baseURL: https://publicapi.wagestream.io/pushapi-prod
   tags:
-  - earned-wage-access
-  - payroll
-  - human-resources
-  - workforce-management
-  - time-and-attendance
-  - hr-integrations
+  - absences
   properties:
   - type: OpenAPI
-    url: openapi/wagestream-integrations-api-openapi.yml
+    url: openapi/wagestream-absences-api-openapi.yml
+  - type: Documentation
+    url: https://connect.stream.co/docs/welcome
+  - type: APIReference
+    url: https://connect.stream.co/reference
+  - type: GettingStarted
+    url: https://connect.stream.co/docs/overview-1
+  - type: Authentication
+    url: https://connect.stream.co/docs/api-authentication-guide
+- aid: wagestream:wagestream-employees-api
+  name: Wagestream Employees API
+  description: Operations relating to employees
+  humanURL: https://connect.stream.co/reference
+  baseURL: https://publicapi.wagestream.io/pushapi-prod
+  tags:
+  - employees
+  properties:
+  - type: OpenAPI
+    url: openapi/wagestream-employees-api-openapi.yml
+  - type: Documentation
+    url: https://connect.stream.co/docs/welcome
+  - type: APIReference
+    url: https://connect.stream.co/reference
+  - type: GettingStarted
+    url: https://connect.stream.co/docs/overview-1
+  - type: Authentication
+    url: https://connect.stream.co/docs/api-authentication-guide
+- aid: wagestream:wagestream-enrollment-api
+  name: Wagestream Enrollment API
+  description: Operations relating to enrolling employees in Wagestream
+  humanURL: https://connect.stream.co/reference
+  baseURL: https://publicapi.wagestream.io/pushapi-prod
+  tags:
+  - enrollment
+  properties:
+  - type: OpenAPI
+    url: openapi/wagestream-enrollment-api-openapi.yml
+  - type: Documentation
+    url: https://connect.stream.co/docs/welcome
+  - type: APIReference
+    url: https://connect.stream.co/reference
+  - type: GettingStarted
+    url: https://connect.stream.co/docs/overview-1
+  - type: Authentication
+    url: https://connect.stream.co/docs/api-authentication-guide
+- aid: wagestream:wagestream-off-cycle-payment-api
+  name: Wagestream Off Cycle Payment API
+  description: Operations relating to off-cycle payments
+  humanURL: https://connect.stream.co/reference
+  baseURL: https://publicapi.wagestream.io/pushapi-prod
+  tags:
+  - off-cycle-payment
+  properties:
+  - type: OpenAPI
+    url: openapi/wagestream-off-cycle-payment-api-openapi.yml
+  - type: Documentation
+    url: https://connect.stream.co/docs/welcome
+  - type: APIReference
+    url: https://connect.stream.co/reference
+  - type: GettingStarted
+    url: https://connect.stream.co/docs/overview-1
+  - type: Authentication
+    url: https://connect.stream.co/docs/api-authentication-guide
+- aid: wagestream:wagestream-shifts-api
+  name: Wagestream Shifts API
+  description: Operations relating to Shifts
+  humanURL: https://connect.stream.co/reference
+  baseURL: https://publicapi.wagestream.io/pushapi-prod
+  tags:
+  - shifts
+  properties:
+  - type: OpenAPI
+    url: openapi/wagestream-shifts-api-openapi.yml
   - type: Documentation
     url: https://connect.stream.co/docs/welcome
   - type: APIReference
@@ -70,6 +132,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: MCPServer
+  url: mcp/wagestream-mcp.yml
 - type: Authentication
   url: authentication/wagestream-authentication.yml
 - type: DomainSecurity
