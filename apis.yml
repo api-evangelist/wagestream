@@ -14,7 +14,7 @@ description: >-
 image: https://stream.co/api/media/file/Home_Hero_Left.webp
 url: https://raw.githubusercontent.com/api-evangelist/wagestream/refs/heads/main/apis.yml
 x-type: company
-specificationVersion: '0.21'
+specificationVersion: '0.23'
 created: '2026-08-05'
 modified: '2026-08-05'
 tags:
