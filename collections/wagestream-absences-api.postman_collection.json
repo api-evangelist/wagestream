@@ -1,0 +1,316 @@
+{
+  "item": [
+    {
+      "id": "fa18647b-8f41-4864-bc47-6b8c04462609",
+      "name": "absences",
+      "description": {
+        "content": "Operations relating to absences",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8aa20a9c-03ed-4d79-9e81-6128a91625e7",
+          "name": "Inserts or updates one or more absences",
+          "request": {
+            "name": "Inserts or updates one or more absences",
+            "description": {
+              "content": "Absences will allow you to control when your employees stop accumulating a balance in Wagestream, ensuring they only have access to salary that has been earnt.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "absences"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"absences\": [\n    {\n      \"employee_id\": \"<string>\",\n      \"absence_id\": \"<string>\",\n      \"type\": \"<string>\",\n      \"reason\": \"<string>\",\n      \"started_at\": \"<string>\",\n      \"ended_at\": \"<string>\"\n    },\n    {\n      \"employee_id\": \"<string>\",\n      \"absence_id\": \"<string>\",\n      \"type\": \"<string>\",\n      \"reason\": \"<string>\",\n      \"started_at\": \"<string>\",\n      \"ended_at\": \"<string>\"\n    }\n  ],\n  \"nonce\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "46ab2d95-1878-4f62-838f-b2ae1823c416",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "absences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"absences\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"absence_id\": \"LOA_0001\",\n      \"type\": \"PAID\",\n      \"reason\": \"Unauthorised\",\n      \"started_at\": \"2022-01-03\",\n      \"ended_at\": \"2022-01-10\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"absence_id\": \"LOA_0001\",\n      \"type\": \"PAID\",\n      \"reason\": \"Unauthorised\",\n      \"started_at\": \"2022-01-03\",\n      \"ended_at\": \"2022-01-10\"\n    }\n  ],\n  \"nonce\": \"aosidjsd12312jdsojd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"ok\": true,\n  \"rows\": 232,\n  \"txn_id\": \"asbd121@EASDmaosdfh92\",\n  \"api_key\": \"deprecated\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "03636189-89f8-42a4-a37b-be71584af4e6",
+              "name": "Forbidden - API key required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "absences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"absences\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"absence_id\": \"LOA_0001\",\n      \"type\": \"PAID\",\n      \"reason\": \"Unauthorised\",\n      \"started_at\": \"2022-01-03\",\n      \"ended_at\": \"2022-01-10\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"absence_id\": \"LOA_0001\",\n      \"type\": \"PAID\",\n      \"reason\": \"Unauthorised\",\n      \"started_at\": \"2022-01-03\",\n      \"ended_at\": \"2022-01-10\"\n    }\n  ],\n  \"nonce\": \"aosidjsd12312jdsojd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f63801b3-4839-470e-a228-aa9cbbf5b8e5",
+              "name": "Nonce was already used",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "absences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"absences\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"absence_id\": \"LOA_0001\",\n      \"type\": \"PAID\",\n      \"reason\": \"Unauthorised\",\n      \"started_at\": \"2022-01-03\",\n      \"ended_at\": \"2022-01-10\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"absence_id\": \"LOA_0001\",\n      \"type\": \"PAID\",\n      \"reason\": \"Unauthorised\",\n      \"started_at\": \"2022-01-03\",\n      \"ended_at\": \"2022-01-10\"\n    }\n  ],\n  \"nonce\": \"aosidjsd12312jdsojd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d0a49b5a-2b26-4eb3-83e7-f6b98ca0fe43",
+              "name": "Invalid format",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "absences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"absences\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"absence_id\": \"LOA_0001\",\n      \"type\": \"PAID\",\n      \"reason\": \"Unauthorised\",\n      \"started_at\": \"2022-01-03\",\n      \"ended_at\": \"2022-01-10\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"absence_id\": \"LOA_0001\",\n      \"type\": \"PAID\",\n      \"reason\": \"Unauthorised\",\n      \"started_at\": \"2022-01-03\",\n      \"ended_at\": \"2022-01-10\"\n    }\n  ],\n  \"nonce\": \"aosidjsd12312jdsojd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "93576703-a652-4f16-9c14-919ab7b20889",
+          "name": "Check status of a previous POST",
+          "request": {
+            "name": "Check status of a previous POST",
+            "description": {
+              "content": "A successful POST to `/absences returns a `txn_id`, which is needed to query the status of the operation",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "absences"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "txn_id",
+                  "value": "<string>",
+                  "description": "(Required) ID of the transaction, as returned by the `POST`"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "51b114a5-ad30-4b32-bd63-c218d424370b",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "absences"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "txn_id",
+                      "value": "asbd121@EASDmaosdfh92"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"state\": \"failed\",\n  \"results\": [\n    {\n      \"item_id\": \"EMPL_001ABC\",\n      \"status\": [\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        },\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        }\n      ]\n    },\n    {\n      \"item_id\": \"EMPL_001ABC\",\n      \"status\": [\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        },\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://publicapi.wagestream.io/pushapi-prod",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "980cb082-815f-4fd4-8385-67069008a55c",
+    "name": "Wagestream Integrations Absences API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "-| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient\n\nContact Support:\n Name: Wagestream Developer\n Email: developers@wagestream.com",
+      "type": "text/plain"
+    }
+  }
+}

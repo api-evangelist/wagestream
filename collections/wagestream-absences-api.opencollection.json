@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Wagestream Integrations Absences API",
+    "version": "2.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "absences",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check status of a previous POST",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/absences",
+            "params": [
+              {
+                "name": "txn_id",
+                "value": "asbd121@EASDmaosdfh92",
+                "type": "query",
+                "description": "ID of the transaction, as returned by the `POST`"
+              }
+            ]
+          },
+          "docs": "A successful POST to `/absences returns a `txn_id`, which is needed to query the status of the operation"
+        },
+        {
+          "info": {
+            "name": "Inserts or updates one or more absences",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/absences",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Absences will allow you to control when your employees stop accumulating a balance in Wagestream, ensuring they only have access to salary that has been earnt."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Wagestream Integrations Off Cycle Payment API",
+    "version": "2.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "off-cycle-payment",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check status of a previous submission of Off-cycle payments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/off-cycle-payments",
+            "params": [
+              {
+                "name": "txn_id",
+                "value": "",
+                "type": "query",
+                "description": "The transaction ID, as returned by the original `POST` request"
+              }
+            ]
+          },
+          "docs": "A successful POST to `/off-cycle-payments` returns a `txn_id`, which is needed to query the status of the operation"
+        },
+        {
+          "info": {
+            "name": "Notify Wagestream of one or more offcycle payment for an employee",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/off-cycle-payments",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Inserts expenses to be expected by employee at specified dates."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

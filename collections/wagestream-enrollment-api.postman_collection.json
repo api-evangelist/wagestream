@@ -1,0 +1,418 @@
+{
+  "item": [
+    {
+      "id": "8aec5f3e-5f23-4203-a95d-fe773bd79a47",
+      "name": "enrollment",
+      "description": {
+        "content": "Operations relating to enrolling employees in Wagestream",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "696ab091-d085-4f71-9bd2-f42d06557205",
+          "name": "Returns the enrollment status of your employees",
+          "request": {
+            "name": "Returns the enrollment status of your employees",
+            "description": {
+              "content": "With this endpoint you can detect which employees have enrolled, or requested to enrol. You can then use this information to choose how/whether you send us further data",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "enrollments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "changes_only",
+                  "value": "",
+                  "description": "If true, will return only records which require you to perform an action on."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "",
+                  "description": "If >0, will only return a maximum number of records, ordered by requested_on asc (so, the 'oldest' records first)"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "1",
+                  "description": "Enables paging through the results in conjunction with the `limit` parameter"
+                },
+                {
+                  "disabled": false,
+                  "key": "banking_only",
+                  "value": "",
+                  "description": "If true, will return only employees with banking details leaving only employees that have been fully enrolled."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8c3e3adb-e2b5-4c10-a326-db1c4fbdf2e1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "enrollments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "changes_only",
+                      "value": "false"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "banking_only",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"enrollments\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"requested_on\": \"2021-03-01\",\n      \"enrolled_on\": \"2021-03-01\",\n      \"unenrolled_on\": \"2021-03-28\",\n      \"bank_sort_code\": \"309197\",\n      \"bank_account_number\": \"00503034\",\n      \"bank_name\": \"Lloyds Bank\",\n      \"action\": \"TO_UNENROLL\",\n      \"state\": \"OPTOUT\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"requested_on\": \"2021-03-01\",\n      \"enrolled_on\": \"2021-03-01\",\n      \"unenrolled_on\": \"2021-03-28\",\n      \"bank_sort_code\": \"309197\",\n      \"bank_account_number\": \"00503034\",\n      \"bank_name\": \"Lloyds Bank\",\n      \"action\": \"TO_UNENROLL\",\n      \"state\": \"OPTOUT\"\n    }\n  ],\n  \"total_records\": 3202,\n  \"page\": 1\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "e8ecbac7-a350-4b25-9675-51325e40b62e",
+              "name": "Forbidden - API key required or invalid",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "enrollments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "changes_only",
+                      "value": "false"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "100"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "banking_only",
+                      "value": "false"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0380dc33-3dea-4b68-b085-32ba44d6476b",
+          "name": "Notifies Wagestream to complete the enrollment for an employee",
+          "request": {
+            "name": "Notifies Wagestream to complete the enrollment for an employee",
+            "description": {
+              "content": "When an employee is approved for activation, and their bank details have changed in the employer's payroll system, POST to this endpoint to inform Wagestream. The employee will immediately be able to transfer any eligible wages.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "enrollments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "employee_id",
+                  "value": "<string>",
+                  "description": "(Required) ID of the employee to activate"
+                }
+              ],
+              "variable": []
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "419898c1-04c5-4ccc-a089-86b6b0a9ae3a",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "enrollments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "employee_id",
+                      "value": "EMPL_001ABC"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "cb2fe6b8-d7ca-4cca-b333-c1c7ee67a142",
+              "name": "Forbidden - API key required / forbidden",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "enrollments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "employee_id",
+                      "value": "EMPL_001ABC"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d9f5ed53-2f3a-4fac-8a50-ede5048e4d85",
+          "name": "Simulate the start of the enrollment process for an employee",
+          "request": {
+            "name": "Simulate the start of the enrollment process for an employee",
+            "description": {
+              "content": "Only for use when testing, not available on production. This endpoints enables you to take an employee which you've previously uploaded and trigger the start of the enrollment process for, this enables you to test the end to end process for enrollments",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "testenrollments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "employee_ids",
+                  "value": "<string>",
+                  "description": "(Required) Comma delimited list of employee_id's to trigger the enrollment process with"
+                },
+                {
+                  "disabled": false,
+                  "key": "employee_ids",
+                  "value": "<string>",
+                  "description": "(Required) Comma delimited list of employee_id's to trigger the enrollment process with"
+                },
+                {
+                  "disabled": false,
+                  "key": "pending",
+                  "value": "<boolean,null>",
+                  "description": "This setting is only useful if you are implementing the `Enterprise` or `Instant Verification` enrolment flows. If you are using the `Standard` Enrolment flow, then this parameter is redundant.\n\nIncluding and setting pending to `true` simulates an employee registering on the app, and them then \naccepting terms and conditions. At this stage they are in Pending\n\nAfter polling for pending enrollments, and seeing an employee requesting to enroll - you would\nsubmit, via POSTing to the employees end point the remaining information required to complete\ntheir enrolment."
+                }
+              ],
+              "variable": []
+            },
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "541d1df3-195d-4ea9-8d32-500bbd44edee",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "testenrollments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "employee_ids",
+                      "value": "EMPL001"
+                    },
+                    {
+                      "key": "pending",
+                      "value": "<boolean,null>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "177f3071-f2c8-4231-91fb-8b1c93b13782",
+              "name": "Forbidden - API key invalid",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "testenrollments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "employee_ids",
+                      "value": "EMPL001"
+                    },
+                    {
+                      "key": "pending",
+                      "value": "<boolean,null>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://publicapi.wagestream.io/pushapi-prod",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "07f5612b-20e5-4f9a-a114-82a7f9f2796d",
+    "name": "Wagestream Integrations Enrollment API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "-| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient\n\nContact Support:\n Name: Wagestream Developer\n Email: developers@wagestream.com",
+      "type": "text/plain"
+    }
+  }
+}

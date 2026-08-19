@@ -1,0 +1,316 @@
+{
+  "item": [
+    {
+      "id": "e5929deb-4ac2-4de9-9100-9e94368f0db5",
+      "name": "shifts",
+      "description": {
+        "content": "Operations relating to Shifts",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "bacda85b-36bc-4c94-a4e5-c9aa7f8d9a7f",
+          "name": "Check status of a previous POST",
+          "request": {
+            "name": "Check status of a previous POST",
+            "description": {
+              "content": "A successful POST to `/shifts` returns a `txn_id`, which is needed to query the status of the operation",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "shifts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "txn_id",
+                  "value": "<string>",
+                  "description": "(Required) ID of the transaction, as returned by the `POST`"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8f9f523e-9c61-4c39-9365-228578dec204",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shifts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "txn_id",
+                      "value": "asbd121@EASDmaosdfh92"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"state\": \"failed\",\n  \"results\": [\n    {\n      \"item_id\": \"EMPL_001ABC\",\n      \"status\": [\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        },\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        }\n      ]\n    },\n    {\n      \"item_id\": \"EMPL_001ABC\",\n      \"status\": [\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        },\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c1330544-e98b-4790-ae91-94d7d512010d",
+          "name": "Inserts or updates one or more shifts",
+          "request": {
+            "name": "Inserts or updates one or more shifts",
+            "description": {
+              "content": "For variable paid employees the \"shift\" is the fundamental building block of Wagestream. Wagestream uses shift information to calculate the portion of earnings an employee has access too",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "shifts"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shifts\": [\n    {\n      \"employee_id\": \"<string>\",\n      \"shift_id\": \"<string>\",\n      \"worked_on\": \"<date>\",\n      \"wages\": \"<number>\",\n      \"hours\": \"<number>\",\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": \"<number>\",\n      \"currency\": \"GBP\",\n      \"info\": \"\",\n      \"type\": \"STANDARD\"\n    },\n    {\n      \"employee_id\": \"<string>\",\n      \"shift_id\": \"<string>\",\n      \"worked_on\": \"<date>\",\n      \"wages\": \"<number>\",\n      \"hours\": \"<number>\",\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": \"<number>\",\n      \"currency\": \"GBP\",\n      \"info\": \"\",\n      \"type\": \"STANDARD\"\n    }\n  ],\n  \"nonce\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d4c55c7c-b03e-400c-b0c0-c6bd8cd81ec1",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shifts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shifts\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"shift_id\": \"1203i3-aiasd1dnas90dh1d\",\n      \"worked_on\": \"2021-08-27\",\n      \"wages\": 75.25,\n      \"hours\": 7,\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": 10.75,\n      \"currency\": \"GBP\",\n      \"info\": \"Distribution team a shift\",\n      \"type\": \"STANDARD\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"shift_id\": \"1203i3-aiasd1dnas90dh1d\",\n      \"worked_on\": \"2021-08-27\",\n      \"wages\": 75.25,\n      \"hours\": 7,\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": 10.75,\n      \"currency\": \"GBP\",\n      \"info\": \"Distribution team a shift\",\n      \"type\": \"STANDARD\"\n    }\n  ],\n  \"nonce\": \"aosidjsd12312jdsojd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"ok\": false,\n  \"rows\": 232,\n  \"txn_id\": \"asbd121@EASDmaosdfh92\",\n  \"api_key\": \"deprecated\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "5d4b7797-9812-457d-8126-2d86154003d0",
+              "name": "Forbidden - API key required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shifts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shifts\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"shift_id\": \"1203i3-aiasd1dnas90dh1d\",\n      \"worked_on\": \"2021-08-27\",\n      \"wages\": 75.25,\n      \"hours\": 7,\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": 10.75,\n      \"currency\": \"GBP\",\n      \"info\": \"Distribution team a shift\",\n      \"type\": \"STANDARD\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"shift_id\": \"1203i3-aiasd1dnas90dh1d\",\n      \"worked_on\": \"2021-08-27\",\n      \"wages\": 75.25,\n      \"hours\": 7,\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": 10.75,\n      \"currency\": \"GBP\",\n      \"info\": \"Distribution team a shift\",\n      \"type\": \"STANDARD\"\n    }\n  ],\n  \"nonce\": \"aosidjsd12312jdsojd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ac0ddd12-a501-44f4-9bfe-078cbd278623",
+              "name": "Nonce was already used",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shifts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shifts\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"shift_id\": \"1203i3-aiasd1dnas90dh1d\",\n      \"worked_on\": \"2021-08-27\",\n      \"wages\": 75.25,\n      \"hours\": 7,\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": 10.75,\n      \"currency\": \"GBP\",\n      \"info\": \"Distribution team a shift\",\n      \"type\": \"STANDARD\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"shift_id\": \"1203i3-aiasd1dnas90dh1d\",\n      \"worked_on\": \"2021-08-27\",\n      \"wages\": 75.25,\n      \"hours\": 7,\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": 10.75,\n      \"currency\": \"GBP\",\n      \"info\": \"Distribution team a shift\",\n      \"type\": \"STANDARD\"\n    }\n  ],\n  \"nonce\": \"aosidjsd12312jdsojd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "5b28b826-20a6-46f0-bc22-11b7eb39a50c",
+              "name": "Invalid format",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "shifts"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"shifts\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"shift_id\": \"1203i3-aiasd1dnas90dh1d\",\n      \"worked_on\": \"2021-08-27\",\n      \"wages\": 75.25,\n      \"hours\": 7,\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": 10.75,\n      \"currency\": \"GBP\",\n      \"info\": \"Distribution team a shift\",\n      \"type\": \"STANDARD\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"shift_id\": \"1203i3-aiasd1dnas90dh1d\",\n      \"worked_on\": \"2021-08-27\",\n      \"wages\": 75.25,\n      \"hours\": 7,\n      \"started_at\": \"<datetime>\",\n      \"ended_at\": \"<datetime>\",\n      \"rate\": 10.75,\n      \"currency\": \"GBP\",\n      \"info\": \"Distribution team a shift\",\n      \"type\": \"STANDARD\"\n    }\n  ],\n  \"nonce\": \"aosidjsd12312jdsojd\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://publicapi.wagestream.io/pushapi-prod",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "52d7e004-7541-46b8-8efa-6b9a91b6f039",
+    "name": "Wagestream Integrations Shifts API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "-| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient\n\nContact Support:\n Name: Wagestream Developer\n Email: developers@wagestream.com",
+      "type": "text/plain"
+    }
+  }
+}

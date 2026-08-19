@@ -1,0 +1,29 @@
+{
+  "provider": "wagestream",
+  "sources": [
+    "wagestream-absences-api-openapi.yml",
+    "wagestream-employees-api-openapi.yml",
+    "wagestream-enrollment-api-openapi.yml",
+    "wagestream-off-cycle-payment-api-openapi.yml",
+    "wagestream-shifts-api-openapi.yml"
+  ],
+  "outputs": [
+    "wagestream-absences-api-openapi.yml",
+    "wagestream-employees-api-openapi.yml",
+    "wagestream-enrollment-api-openapi.yml",
+    "wagestream-off-cycle-payment-api-openapi.yml",
+    "wagestream-shifts-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "wagestream-absences-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "wagestream-employees-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "wagestream-enrollment-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "wagestream-off-cycle-payment-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "wagestream-shifts-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": []
+}

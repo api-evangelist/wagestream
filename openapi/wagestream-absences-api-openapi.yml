@@ -1,0 +1,185 @@
+openapi: 3.2.0
+info:
+  title: Wagestream Integrations Absences API
+  version: 2.1.0
+  description: -| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient
+  contact:
+    name: Wagestream Developer
+    email: developers@wagestream.com
+    url: https://developers.wagestream.com
+servers:
+- url: https://publicapi.wagestream.io/pushapi-prod
+  description: Production Environment
+- url: https://publicapi.wagestream.io/pushapi-staging
+  description: Sandbox Environment
+tags:
+- name: absences
+  description: Operations relating to absences
+paths:
+  /absences:
+    post:
+      tags:
+      - absences
+      summary: Inserts or updates one or more absences
+      description: Absences will allow you to control when your employees stop accumulating a balance in Wagestream, ensuring they only have access to salary that has been earnt.
+      operationId: post_absences
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '403':
+          description: Forbidden - API key required
+        '409':
+          description: Nonce was already used
+        '422':
+          description: Invalid format
+      requestBody:
+        description: An array of `absence` objects, submitted as `absences` with an optional `nonce`
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AbsenceList'
+    get:
+      tags:
+      - absences
+      summary: Check status of a previous POST
+      description: A successful POST to `/absences returns a `txn_id`, which is needed to query the status of the operation
+      operationId: get_absences
+      parameters:
+      - name: txn_id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: ID of the transaction, as returned by the `POST`
+        example: asbd121@EASDmaosdfh92
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+components:
+  schemas:
+    TransactionStatus:
+      type: object
+      description: The structure in which results are reported
+      properties:
+        state:
+          type: string
+          example: failed
+          description: 'queued = The data was received and is pending final processing
+
+            processed = The data was received and processed, and will now be visible in your partner portal
+
+            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
+          enum:
+          - queued
+          - processed
+          - failed
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponseItemStatus'
+    TransactionStatusFieldItem:
+      type: object
+      additionalProperties: true
+      example:
+        employee_id:
+        - asdasd
+    TransactionResponse:
+      type: object
+      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
+      properties:
+        ok:
+          type: boolean
+          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
+        rows:
+          type: integer
+          description: The number of employee rows received in the request which have been scheduled for processing
+          example: 232
+        txn_id:
+          type: string
+          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
+          example: asbd121@EASDmaosdfh92
+          maxLength: 32
+        api_key:
+          type: string
+          description: the original key used to make the API request with
+          example: deprecated
+          deprecated: true
+    AbsenceList:
+      type: object
+      properties:
+        absences:
+          type: array
+          items:
+            $ref: '#/components/schemas/absences'
+        nonce:
+          type: string
+          example: aosidjsd12312jdsojd
+          default: null
+    absences:
+      type: object
+      title: Absences
+      properties:
+        employee_id:
+          type: string
+          description: This is typically typically the unique identifier for the employee across your many HR/WFM/Payroll systems, it's typically an employees payroll number, or similar
+          example: EMPL_001ABC
+          maxLength: 256
+        absence_id:
+          type: string
+          description: A unique ID linked to a specific absence record.
+          example: LOA_0001
+          maxLength: 256
+        type:
+          type: string
+          description: The type of leave an employee is on - expected values are “Paid” and “Unpaid”.
+          example: PAID
+          maxLength: 246
+        reason:
+          type: string
+          description: The category of leave an employee is on - for example; Unauthorised, Training, Disciplinary, Sabbatical, Maternity, Jury Service, Long Term Sick.
+          example: Unauthorised
+          maxLength: 256
+        started_at:
+          type: string
+          description: The day the leave of absence starts
+          example: '2022-01-03'
+          pattern: ^\d{4}-\d{2}-\d{2}$
+        ended_at:
+          type: string
+          description: DThe day the leave of absence ends
+          example: '2022-01-10'
+          pattern: ^\d{4}-\d{2}-\d{2}$
+      required:
+      - employee_id
+      - absence_id
+      - type
+      - reason
+    TransactionResponseItemStatus:
+      type: object
+      description: A line by line explanation of
+      properties:
+        item_id:
+          type: string
+          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
+          example: EMPL_001ABC
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionStatusFieldItem'
+          description: A combination of warnings/errors which may have affected the import of this record
+          example:
+          - INVALID_DATETIME_FORMAT
+          - INVALID_ENUM_VALUE
+  securitySchemes:
+    name:
+      type: apiKey
+      name: x-api-key
+      in: header

@@ -1,0 +1,169 @@
+openapi: 3.2.0
+info:
+  title: Wagestream Integrations Off Cycle Payment API
+  version: 2.1.0
+  description: -| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient
+  contact:
+    name: Wagestream Developer
+    email: developers@wagestream.com
+    url: https://developers.wagestream.com
+servers:
+- url: https://publicapi.wagestream.io/pushapi-prod
+  description: Production Environment
+- url: https://publicapi.wagestream.io/pushapi-staging
+  description: Sandbox Environment
+tags:
+- name: off-cycle-payment
+  description: Operations relating to off-cycle payments
+paths:
+  /off-cycle-payments:
+    post:
+      operationId: post_offcycle_payment
+      tags:
+      - off-cycle-payment
+      summary: Notify Wagestream of one or more offcycle payment for an employee
+      description: Inserts expenses to be expected by employee at specified dates.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '403':
+          description: API key required
+        '409':
+          description: Nonce was already used
+        '422':
+          description: Invalid format
+      requestBody:
+        description: An array of `Offcycle Payment` objects, submitted as `payments` with an optional `nonce`
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/off-cycle-payment-list'
+    get:
+      tags:
+      - off-cycle-payment
+      summary: Check status of a previous submission of Off-cycle payments
+      description: A successful POST to `/off-cycle-payments` returns a `txn_id`, which is needed to query the status of the operation
+      operationId: get_expenses
+      parameters:
+      - name: txn_id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: The transaction ID, as returned by the original `POST` request
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+components:
+  schemas:
+    off-cycle-payment:
+      type: object
+      title: Off-cycle Payment
+      properties:
+        employee_id:
+          type: string
+          description: Unique ID within your HRIS/Payroll/WFM of this employee
+          example: EMPL_001ABC
+          maxLength: 256
+        amount:
+          type: number
+          description: Total amount to two decimal places
+          example: 250.23
+        expected_date:
+          type: string
+          description: The date for which the expense is expected to be transferred
+          example: '2021-03-28'
+      required:
+      - employee_id
+      - amount
+      - expected_date
+    TransactionStatus:
+      type: object
+      description: The structure in which results are reported
+      properties:
+        state:
+          type: string
+          example: failed
+          description: 'queued = The data was received and is pending final processing
+
+            processed = The data was received and processed, and will now be visible in your partner portal
+
+            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
+          enum:
+          - queued
+          - processed
+          - failed
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponseItemStatus'
+    TransactionStatusFieldItem:
+      type: object
+      additionalProperties: true
+      example:
+        employee_id:
+        - asdasd
+    TransactionResponse:
+      type: object
+      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
+      properties:
+        ok:
+          type: boolean
+          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
+        rows:
+          type: integer
+          description: The number of employee rows received in the request which have been scheduled for processing
+          example: 232
+        txn_id:
+          type: string
+          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
+          example: asbd121@EASDmaosdfh92
+          maxLength: 32
+        api_key:
+          type: string
+          description: the original key used to make the API request with
+          example: deprecated
+          deprecated: true
+    off-cycle-payment-list:
+      type: object
+      title: Off-cycle Payment List
+      properties:
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/off-cycle-payment'
+        nonce:
+          type: string
+          description: An optional nonce to prevent duplicate submissions of the same api request
+      required:
+      - off-cycle-payment
+    TransactionResponseItemStatus:
+      type: object
+      description: A line by line explanation of
+      properties:
+        item_id:
+          type: string
+          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
+          example: EMPL_001ABC
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionStatusFieldItem'
+          description: A combination of warnings/errors which may have affected the import of this record
+          example:
+          - INVALID_DATETIME_FORMAT
+          - INVALID_ENUM_VALUE
+  securitySchemes:
+    name:
+      type: apiKey
+      name: x-api-key
+      in: header

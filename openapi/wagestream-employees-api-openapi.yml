@@ -1,0 +1,286 @@
+openapi: 3.2.0
+info:
+  title: Wagestream Integrations Employees API
+  version: 2.1.0
+  description: -| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient
+  contact:
+    name: Wagestream Developer
+    email: developers@wagestream.com
+    url: https://developers.wagestream.com
+servers:
+- url: https://publicapi.wagestream.io/pushapi-prod
+  description: Production Environment
+- url: https://publicapi.wagestream.io/pushapi-staging
+  description: Sandbox Environment
+tags:
+- name: employees
+  description: Operations relating to employees
+paths:
+  /employees:
+    get:
+      tags:
+      - employees
+      summary: Retrieve the status of your insert/update operation
+      parameters:
+      - in: query
+        name: txn_id
+        description: Supply the transaction id you recieved in the response from a POST to the employees endpoint
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: ac506743-fa12-4f2e-9ded-dfe1064ceaec
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              example: '{ "state": "failed", "results": [ { "item_id": "EMPL_001ABC", "status": [ {"bank_sort_code": ["MODULUS_CHECK_FAILED","NOT_FPS_ENABLED"]}, {"start_date": ["INVALID_DATE_FORMAT"]}         ] }, { "item_id": "EMPL_007SHAKENNOTSTIRRED", "status": [ {"verification_field_3": ["REQUIRED_PROPERTY"]}, {"start_date": ["INVALID_DATE_FORMAT"]}         ] } ] }'
+        '403':
+          description: Forbidden - API Key not recognised/invalid
+      description: ''
+    post:
+      summary: Insert and/or Update (Upsert) your employees into Wagestream
+      tags:
+      - employees
+      requestBody:
+        description: An array of employee objects, submitted as employees with an optional nonce
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmployeeList'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '403':
+          description: Forbidden - the API key is invalid
+        '409':
+          description: Conflict - the nonce value has already been used
+        '422':
+          description: Unprocessable Entity - it's likely the payload json did not validate
+components:
+  schemas:
+    TransactionResponse:
+      type: object
+      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
+      properties:
+        ok:
+          type: boolean
+          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
+        rows:
+          type: integer
+          description: The number of employee rows received in the request which have been scheduled for processing
+          example: 232
+        txn_id:
+          type: string
+          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
+          example: asbd121@EASDmaosdfh92
+          maxLength: 32
+        api_key:
+          type: string
+          description: the original key used to make the API request with
+          example: deprecated
+          deprecated: true
+    EmployeeList:
+      properties:
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+        nonce:
+          type: string
+          description: supply a unique identifier for the request to ensure this request is used/consumed only once.
+          default: ''
+    Employee:
+      type: object
+      required:
+      - employee_id
+      properties:
+        employee_id:
+          type: string
+          description: Unique ID within your HRIS/Payroll/WFM of this employee
+          example: EMPL_001ABC
+          maxLength: 256
+        name:
+          type: string
+          description: Friendly name for the employee e.g Daffy Duck
+          maxLength: 256
+          example: Wile E. Coyote
+        email:
+          type: string
+          description: The employees contact email address to receive awareness communication & sign-in notifications.
+          maxLength: 256
+          example: wile.e@coyote.com
+        mobile_number:
+          type: string
+          description: The employees mobile number. Ideally the input should be sanitised to +{countrycode}{number} e.g +447976123123 you should ensure removing any spaces, dashes in the number
+          maxLength: 256
+          default: ''
+          example: '+447976123123'
+        group:
+          type: string
+          description: The legal entity which the employee works for, e.g you may have employees that work for multiple businesses, you may be doing the integration on behalf of Acme Group, but employees who work for the logistics business will be employed by Acme Logistics
+          maxLength: 256
+          default: ''
+          example: Acme Anvils Ltd
+        division:
+          type: string
+          description: Division is synonymous with department, it's another organisational unit and way to segment employees within Wagestream.
+          maxLength: 256
+          default: ''
+          example: Unit 5, Warehouse
+        assignment_id:
+          type: string
+          description: If an employee works multiple positions, contracts or assignments populate this field you will need to send us 1 employee record per assignment with the assignment_id populated
+          default: null
+          example: null
+        pay_schedule_id:
+          type: string
+          description: "A unique identifier relating to the pay schedule an employee is assigned to, for example you may have 1 group of employees on a weekly paycycle, \nbut another on a monthly, you can use this field to tell us which pay-cycle/schedule the employee is on"
+          example: monthly-5-1
+          default: null
+        start_date:
+          type: string
+          description: The date in which the main contract, or assignment for this employee starts
+          example: '2021-05-22'
+          default: ''
+        termination_date:
+          type: string
+          default: ''
+          example: '2021-08-23'
+          maxLength: 10
+          description: Synonymous with leaving date, the date the main contract or assignment for this employee ends. This information is used to offboard and unenrol an employee in Wagestream
+        salary:
+          type: number
+          example: '18000'
+          description: Gross salary amount, decimal to two decimal places
+        salary_frequency:
+          type: string
+          description: 'Set the frequency which the salary value pruports to e.g if the value in the salary field is monthly gross salary figure, set the value here to M, by default it is set to A for an annual gross salary figure.
+
+
+            R = Hourly
+
+            D = Daily
+
+            W = Weekly
+
+            F = Fortnightly
+
+            L = Lunar
+
+            M = Monthly
+
+            Q = Quarterly
+
+            H = Half Yearly
+
+            A = Annually
+
+            '
+          enum:
+          - H
+          - D
+          - W
+          - F
+          - M
+          - L
+          - Q
+          - H
+          - A
+          default: A
+        contracted_hours:
+          type: number
+          description: A decimal value (2 decimal places) representing the number of contracted hours for a defined period, which by default is monthly, but can be overriden using the salary_frequency column. This field is only required if you have employees on contracted hours and are using the rate field
+          example: '32'
+          default: ''
+        rate:
+          type: number
+          description: A decimal value (2 decimal places) which represents the base/default hourly rate for this employee
+          example: '11.25'
+          default: ''
+        bank_account_number:
+          type: number
+          description: 'The employees UK Bank primary account number which is used to receive their salary, or EU IBAN number '
+          example: '12345678'
+          default: ''
+        bank_sort_code:
+          type: string
+          description: 'The employees UK sortcode (8 digits without the dashes representing a UK bank sortcode
+
+
+            or a EU BIC code
+
+
+            Please note we do not support UK building society roll numbers'
+          example: '309197'
+          default: ''
+        split_pay:
+          type: boolean
+          description: Does this employee have their salary dispersed through multiple bank accounts?
+          example: false
+        split_pay_percentage:
+          type: number
+          description: Optional, the percentage of salary (to two decimal places) paid to their primary bank account
+          example: 50
+          default: null
+        paused:
+          type: string
+          description: "Possible Values are: \n  Y for paused (employee cannot access Wages), \n  S for paused and salary accrual stopped, \n  N for unpaused"
+          enum:
+          - Y
+          - S
+          - N
+          maxLength: 1
+          example: Y
+          default: ''
+        paused_until:
+          type: string
+          description: Date, in ISO86001 format
+          maxLength: 10
+          example: '2021-04-20'
+          default: A date in the future until which to pause the employee from being able to access their earnings
+        paused_reason:
+          type: string
+          description: Describe the reason why you've needed to pause this employee, typical values include - sickness, suspension, holiday, absent
+          maxLength: 256
+          example: sickness
+          default: ''
+        max_transfer_percentage:
+          type: integer
+          description: Adjust the maximum percentage of earned wages an employee may access, this property will not override the company default setting which is typically 50% of earnings. If you want an employee to only have access to 25% of earnings, then set to 25
+          maxLength: 2
+          example: '50'
+          default: ''
+        verification_field_1:
+          type: string
+          description: SHA256 hashed value of a pre-agreed piece of employee data which can be used to validate the employee on registration
+          default: ''
+        verification_field_2:
+          type: string
+          description: SHA256 hashed value of a pre-agreed piece of employee data which can be used to validate the employee on registration
+          default: ''
+        verification_field_3:
+          type: string
+          description: SHA256 hashed value of a pre-agreed piece of employee data which can be used to validate the employee on registration
+          default: ''
+        properties:
+          type: object
+          description: Properties can be used to send wagestream any additional meta data or fields on an employee without being bound by the core field definition
+          properties:
+            originated_at:
+              type: string
+              format: datetime
+              example: '2021-01-02T00:32:12Z'
+              description: The date and time (in ISO 8601 YYYY-MM-DDTHH:MM:SS) of the time the record was generated by your system, this helps Wagestream detect when an update for an employee record has occured out of order with one another. e.g two successive updates of the same employee is received out of sync
+  securitySchemes:
+    name:
+      type: apiKey
+      name: x-api-key
+      in: header

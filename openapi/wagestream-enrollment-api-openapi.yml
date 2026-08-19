@@ -1,0 +1,217 @@
+openapi: 3.2.0
+info:
+  title: Wagestream Integrations Enrollment API
+  version: 2.1.0
+  description: -| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient
+  contact:
+    name: Wagestream Developer
+    email: developers@wagestream.com
+    url: https://developers.wagestream.com
+servers:
+- url: https://publicapi.wagestream.io/pushapi-prod
+  description: Production Environment
+- url: https://publicapi.wagestream.io/pushapi-staging
+  description: Sandbox Environment
+tags:
+- name: enrollment
+  description: Operations relating to enrolling employees in Wagestream
+paths:
+  /enrollments:
+    get:
+      tags:
+      - enrollment
+      summary: Returns the enrollment status of your employees
+      description: With this endpoint you can detect which employees have enrolled, or requested to enrol. You can then use this information to choose how/whether you send us further data
+      parameters:
+      - in: query
+        name: changes_only
+        schema:
+          type: boolean
+          example: false
+          default: null
+        required: false
+        description: If true, will return only records which require you to perform an action on.
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          format: int32
+          default: null
+        required: false
+        example: 100
+        description: If >0, will only return a maximum number of records, ordered by requested_on asc (so, the 'oldest' records first)
+      - in: query
+        name: page
+        schema:
+          type: integer
+          format: int32
+          default: 1
+        required: false
+        example: 1
+        description: Enables paging through the results in conjunction with the `limit` parameter
+      - in: query
+        name: banking_only
+        schema:
+          type: boolean
+          default: null
+          example: false
+          minimum: 0
+        required: false
+        description: If true, will return only employees with banking details leaving only employees that have been fully enrolled.
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/enrollment_list'
+        '403':
+          description: Forbidden - API key required or invalid
+    post:
+      operationId: post_enrollments
+      deprecated: true
+      tags:
+      - enrollment
+      summary: Notifies Wagestream to complete the enrollment for an employee
+      description: When an employee is approved for activation, and their bank details have changed in the employer's payroll system, POST to this endpoint to inform Wagestream. The employee will immediately be able to transfer any eligible wages.
+      parameters:
+      - name: employee_id
+        in: query
+        required: true
+        schema:
+          type: string
+          example: EMPL_001ABC
+        description: ID of the employee to activate
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden - API key required / forbidden
+  /testenrollments:
+    post:
+      summary: Simulate the start of the enrollment process for an employee
+      description: Only for use when testing, not available on production. This endpoints enables you to take an employee which you've previously uploaded and trigger the start of the enrollment process for, this enables you to test the end to end process for enrollments
+      tags:
+      - enrollment
+      parameters:
+      - name: employee_ids
+        in: query
+        schema:
+          type: array
+          items:
+            type: string
+        description: Comma delimited list of employee_id's to trigger the enrollment process with
+        required: true
+        examples:
+          oneId:
+            summary: Example of a single employee_id
+            value:
+            - EMPL001
+          multipleIds:
+            summary: Example of multiple employee_id's
+            value:
+            - EMPL001
+            - EMPL003
+            - EMPL02321
+      - name: pending
+        in: query
+        schema:
+          type:
+          - boolean
+          - 'null'
+        description: "This setting is only useful if you are implementing the `Enterprise` or `Instant Verification` enrolment flows. If you are using the `Standard` Enrolment flow, then this parameter is redundant.\n\nIncluding and setting pending to `true` simulates an employee registering on the app, and them then \naccepting terms and conditions. At this stage they are in Pending\n\nAfter polling for pending enrollments, and seeing an employee requesting to enroll - you would\nsubmit, via POSTing to the employees end point the remaining information required to complete\ntheir enrolment."
+      responses:
+        '200':
+          description: Success
+        '403':
+          description: Forbidden - API key invalid
+components:
+  schemas:
+    enrollment:
+      type: object
+      description: An enrollment record describing the enrollment status of an employee
+      properties:
+        employee_id:
+          type: string
+          description: The unique reference of the employee, typically payroll number
+          example: EMPL_001ABC
+        requested_on:
+          type: string
+          description: Date the employee requested to enroll
+          format: date
+          example: '2021-03-01'
+        enrolled_on:
+          type: string
+          description: Date the employee completed enrollment to Wagestream
+          format: date
+          example: '2021-03-01'
+        unenrolled_on:
+          type: string
+          format: date
+          example: '2021-03-28'
+          description: Date the employee unenrolled, or opted out
+        bank_sort_code:
+          description: The UK bank sortcode, or BIC (for EU based clients) which needs to be imported into your payroll system for this employee
+          type: string
+          format: number
+          example: '309197'
+        bank_account_number:
+          type: string
+          format: number
+          description: The UK bank sortcode, or IBAN (for EU based clients) which needs to be imported into your payroll system for this employee
+          example: '00503034'
+        bank_name:
+          type: string
+          description: 'If the employee is enrolled in Wagestream, this will read "wagestream",
+
+
+            If the employee is enrolling and we have not yet received their personal bank account information from your systems, this will be "Unknown Bank" in all other cases it will read the bank name of their personal bank account information'
+          example: Lloyds Bank
+        action:
+          type: string
+          example: TO_UNENROLL
+          enum:
+          - NONE
+          - PENDING
+          - TO_COMPLETE
+          - TO_UNENROLL
+          description: "An indicator that Wagestream requires you to perform an action for this specific enrollment\n\n`NONE` - indicates that no update or action is required to your systems for this enrollment\n`PENDING` - indicates that the employee has requested to enrol in Wagestream, and we are awaiting their bank_account_number and bank_account_sortcode to be supplied to us to complete enrolment\n`TO_COMPLETE` - indicates we need you to update their bank account information in your systems with the provided account details from Wagestream\n`TO_UNENROLL` - indicates that the employee is no longer eligible to participate in the Wagestream service through either:\n  Leaving employment\n  Opting out of the service\n  Been forcibly disabled from the service\n\nThe action to take when receiving this action in your systems is to update the Bank account information\nas Wagestream would now be supplying their personal bank account information back to you."
+        state:
+          type: string
+          example: OPTOUT
+          enum:
+          - PENDING
+          - ENROLLED
+          - ACTIVE
+          - DISABLED
+          - OPTOUT
+          description: '- PENDING   = An employee has requested to enrol in Wagestream but we are awaiting their personal banking details, or for an update to their banking details with their Wagestream account
+
+            - ENROLLED  = An employee has successfully enrolled
+
+            - ACTIVE    = An employee has successfully enrolled and has made one or more transaction with the service
+
+            - DISABLED  = An employee has been disabled from the service
+
+            - OPTOUT    = An employee has chosen, or been forcibly opted out of the service         '
+    enrollment_list:
+      type: object
+      title: activation_list
+      properties:
+        enrollments:
+          type: array
+          items:
+            $ref: '#/components/schemas/enrollment'
+        total_records:
+          type: integer
+          description: the total rows available
+          example: 3202
+        page:
+          type: integer
+          description: the current page of results, it is indexed at 1, not 0
+          example: 1
+  securitySchemes:
+    name:
+      type: apiKey
+      name: x-api-key
+      in: header

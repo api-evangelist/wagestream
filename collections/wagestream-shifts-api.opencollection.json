@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Wagestream Integrations Shifts API",
+    "version": "2.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "shifts",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Check status of a previous POST",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/shifts",
+            "params": [
+              {
+                "name": "txn_id",
+                "value": "asbd121@EASDmaosdfh92",
+                "type": "query",
+                "description": "ID of the transaction, as returned by the `POST`"
+              }
+            ]
+          },
+          "docs": "A successful POST to `/shifts` returns a `txn_id`, which is needed to query the status of the operation"
+        },
+        {
+          "info": {
+            "name": "Inserts or updates one or more shifts",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/shifts",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "For variable paid employees the \"shift\" is the fundamental building block of Wagestream. Wagestream uses shift information to calculate the portion of earnings an employee has access too"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

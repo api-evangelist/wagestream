@@ -1,0 +1,347 @@
+{
+  "item": [
+    {
+      "id": "1b9f90fd-6d3e-4809-8d29-4ae9863b1084",
+      "name": "employees",
+      "description": {
+        "content": "Operations relating to employees",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "81697547-ff6d-4357-9609-366e928b0c0b",
+          "name": "Retrieve the status of your insert/update operation",
+          "request": {
+            "name": "Retrieve the status of your insert/update operation",
+            "description": {
+              "content": "",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "employees"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "txn_id",
+                  "value": "<uuid>",
+                  "description": "(Required) Supply the transaction id you recieved in the response from a POST to the employees endpoint"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4f2dfd25-581f-4448-9bc9-633110146793",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "employees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "txn_id",
+                      "value": "ac506743-fa12-4f2e-9ded-dfe1064ceaec"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"{ \\\"state\\\": \\\"failed\\\", \\\"results\\\": [ { \\\"item_id\\\": \\\"EMPL_001ABC\\\", \\\"status\\\": [ {\\\"bank_sort_code\\\": [\\\"MODULUS_CHECK_FAILED\\\",\\\"NOT_FPS_ENABLED\\\"]}, {\\\"start_date\\\": [\\\"INVALID_DATE_FORMAT\\\"]}         ] }, { \\\"item_id\\\": \\\"EMPL_007SHAKENNOTSTIRRED\\\", \\\"status\\\": [ {\\\"verification_field_3\\\": [\\\"REQUIRED_PROPERTY\\\"]}, {\\\"start_date\\\": [\\\"INVALID_DATE_FORMAT\\\"]}         ] } ] }\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "d1a2bc41-f7e1-4da5-bd6e-f1418b4d7a77",
+              "name": "Forbidden - API Key not recognised/invalid",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "employees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "txn_id",
+                      "value": "ac506743-fa12-4f2e-9ded-dfe1064ceaec"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ed0f05f1-66ca-47dd-970e-224899398c84",
+          "name": "Insert and/or Update (Upsert) your employees into Wagestream",
+          "request": {
+            "name": "Insert and/or Update (Upsert) your employees into Wagestream",
+            "description": {},
+            "url": {
+              "path": [
+                "employees"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employees\": [\n    {\n      \"employee_id\": \"<string>\",\n      \"name\": \"<string>\",\n      \"email\": \"<string>\",\n      \"mobile_number\": \"\",\n      \"group\": \"\",\n      \"division\": \"\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": null,\n      \"start_date\": \"\",\n      \"termination_date\": \"\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"\",\n      \"split_pay\": \"<boolean>\",\n      \"split_pay_percentage\": null,\n      \"paused\": \"\",\n      \"paused_until\": \"A date in the future until which to pause the employee from being able to access their earnings\",\n      \"paused_reason\": \"\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"<datetime>\"\n      }\n    },\n    {\n      \"employee_id\": \"<string>\",\n      \"name\": \"<string>\",\n      \"email\": \"<string>\",\n      \"mobile_number\": \"\",\n      \"group\": \"\",\n      \"division\": \"\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": null,\n      \"start_date\": \"\",\n      \"termination_date\": \"\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"\",\n      \"split_pay\": \"<boolean>\",\n      \"split_pay_percentage\": null,\n      \"paused\": \"\",\n      \"paused_until\": \"A date in the future until which to pause the employee from being able to access their earnings\",\n      \"paused_reason\": \"\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"<datetime>\"\n      }\n    }\n  ],\n  \"nonce\": \"\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "efc97686-97f1-4ee1-9c65-860d85a5031b",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "employees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"employees\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"name\": \"Wile E. Coyote\",\n      \"email\": \"wile.e@coyote.com\",\n      \"mobile_number\": \"+447976123123\",\n      \"group\": \"Acme Anvils Ltd\",\n      \"division\": \"Unit 5, Warehouse\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": \"monthly-5-1\",\n      \"start_date\": \"2021-05-22\",\n      \"termination_date\": \"2021-08-23\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"309197\",\n      \"split_pay\": false,\n      \"split_pay_percentage\": 50,\n      \"paused\": \"Y\",\n      \"paused_until\": \"2021-04-20\",\n      \"paused_reason\": \"sickness\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"2021-01-02T00:32:12Z\"\n      }\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"name\": \"Wile E. Coyote\",\n      \"email\": \"wile.e@coyote.com\",\n      \"mobile_number\": \"+447976123123\",\n      \"group\": \"Acme Anvils Ltd\",\n      \"division\": \"Unit 5, Warehouse\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": \"monthly-5-1\",\n      \"start_date\": \"2021-05-22\",\n      \"termination_date\": \"2021-08-23\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"309197\",\n      \"split_pay\": false,\n      \"split_pay_percentage\": 50,\n      \"paused\": \"Y\",\n      \"paused_until\": \"2021-04-20\",\n      \"paused_reason\": \"sickness\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"2021-01-02T00:32:12Z\"\n      }\n    }\n  ],\n  \"nonce\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"ok\": true,\n  \"rows\": 232,\n  \"txn_id\": \"asbd121@EASDmaosdfh92\",\n  \"api_key\": \"deprecated\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "31b0a840-bfcd-4b83-9da4-b5cbc59197d0",
+              "name": "Forbidden - the API key is invalid",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "employees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"employees\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"name\": \"Wile E. Coyote\",\n      \"email\": \"wile.e@coyote.com\",\n      \"mobile_number\": \"+447976123123\",\n      \"group\": \"Acme Anvils Ltd\",\n      \"division\": \"Unit 5, Warehouse\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": \"monthly-5-1\",\n      \"start_date\": \"2021-05-22\",\n      \"termination_date\": \"2021-08-23\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"309197\",\n      \"split_pay\": false,\n      \"split_pay_percentage\": 50,\n      \"paused\": \"Y\",\n      \"paused_until\": \"2021-04-20\",\n      \"paused_reason\": \"sickness\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"2021-01-02T00:32:12Z\"\n      }\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"name\": \"Wile E. Coyote\",\n      \"email\": \"wile.e@coyote.com\",\n      \"mobile_number\": \"+447976123123\",\n      \"group\": \"Acme Anvils Ltd\",\n      \"division\": \"Unit 5, Warehouse\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": \"monthly-5-1\",\n      \"start_date\": \"2021-05-22\",\n      \"termination_date\": \"2021-08-23\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"309197\",\n      \"split_pay\": false,\n      \"split_pay_percentage\": 50,\n      \"paused\": \"Y\",\n      \"paused_until\": \"2021-04-20\",\n      \"paused_reason\": \"sickness\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"2021-01-02T00:32:12Z\"\n      }\n    }\n  ],\n  \"nonce\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3580aed7-8d91-4723-b05a-ed2e01c38dab",
+              "name": "Conflict - the nonce value has already been used",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "employees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"employees\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"name\": \"Wile E. Coyote\",\n      \"email\": \"wile.e@coyote.com\",\n      \"mobile_number\": \"+447976123123\",\n      \"group\": \"Acme Anvils Ltd\",\n      \"division\": \"Unit 5, Warehouse\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": \"monthly-5-1\",\n      \"start_date\": \"2021-05-22\",\n      \"termination_date\": \"2021-08-23\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"309197\",\n      \"split_pay\": false,\n      \"split_pay_percentage\": 50,\n      \"paused\": \"Y\",\n      \"paused_until\": \"2021-04-20\",\n      \"paused_reason\": \"sickness\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"2021-01-02T00:32:12Z\"\n      }\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"name\": \"Wile E. Coyote\",\n      \"email\": \"wile.e@coyote.com\",\n      \"mobile_number\": \"+447976123123\",\n      \"group\": \"Acme Anvils Ltd\",\n      \"division\": \"Unit 5, Warehouse\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": \"monthly-5-1\",\n      \"start_date\": \"2021-05-22\",\n      \"termination_date\": \"2021-08-23\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"309197\",\n      \"split_pay\": false,\n      \"split_pay_percentage\": 50,\n      \"paused\": \"Y\",\n      \"paused_until\": \"2021-04-20\",\n      \"paused_reason\": \"sickness\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"2021-01-02T00:32:12Z\"\n      }\n    }\n  ],\n  \"nonce\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "f79ac264-528c-4a56-ac84-71835d5ff112",
+              "name": "Unprocessable Entity - it's likely the payload json did not validate",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "employees"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"employees\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"name\": \"Wile E. Coyote\",\n      \"email\": \"wile.e@coyote.com\",\n      \"mobile_number\": \"+447976123123\",\n      \"group\": \"Acme Anvils Ltd\",\n      \"division\": \"Unit 5, Warehouse\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": \"monthly-5-1\",\n      \"start_date\": \"2021-05-22\",\n      \"termination_date\": \"2021-08-23\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"309197\",\n      \"split_pay\": false,\n      \"split_pay_percentage\": 50,\n      \"paused\": \"Y\",\n      \"paused_until\": \"2021-04-20\",\n      \"paused_reason\": \"sickness\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"2021-01-02T00:32:12Z\"\n      }\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"name\": \"Wile E. Coyote\",\n      \"email\": \"wile.e@coyote.com\",\n      \"mobile_number\": \"+447976123123\",\n      \"group\": \"Acme Anvils Ltd\",\n      \"division\": \"Unit 5, Warehouse\",\n      \"assignment_id\": null,\n      \"pay_schedule_id\": \"monthly-5-1\",\n      \"start_date\": \"2021-05-22\",\n      \"termination_date\": \"2021-08-23\",\n      \"salary\": \"<number>\",\n      \"salary_frequency\": \"A\",\n      \"contracted_hours\": \"\",\n      \"rate\": \"\",\n      \"bank_account_number\": \"\",\n      \"bank_sort_code\": \"309197\",\n      \"split_pay\": false,\n      \"split_pay_percentage\": 50,\n      \"paused\": \"Y\",\n      \"paused_until\": \"2021-04-20\",\n      \"paused_reason\": \"sickness\",\n      \"max_transfer_percentage\": \"\",\n      \"verification_field_1\": \"\",\n      \"verification_field_2\": \"\",\n      \"verification_field_3\": \"\",\n      \"properties\": {\n        \"originated_at\": \"2021-01-02T00:32:12Z\"\n      }\n    }\n  ],\n  \"nonce\": \"\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://publicapi.wagestream.io/pushapi-prod",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "c140b1c5-c8c1-4a83-a1f8-51f0819038c0",
+    "name": "Wagestream Integrations Employees API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "-| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient\n\nContact Support:\n Name: Wagestream Developer\n Email: developers@wagestream.com",
+      "type": "text/plain"
+    }
+  }
+}

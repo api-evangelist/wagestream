@@ -1,0 +1,213 @@
+openapi: 3.2.0
+info:
+  title: Wagestream Integrations Shifts API
+  version: 2.1.0
+  description: -| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient
+  contact:
+    name: Wagestream Developer
+    email: developers@wagestream.com
+    url: https://developers.wagestream.com
+servers:
+- url: https://publicapi.wagestream.io/pushapi-prod
+  description: Production Environment
+- url: https://publicapi.wagestream.io/pushapi-staging
+  description: Sandbox Environment
+tags:
+- name: shifts
+  description: Operations relating to Shifts
+paths:
+  /shifts:
+    get:
+      tags:
+      - shifts
+      summary: Check status of a previous POST
+      description: A successful POST to `/shifts` returns a `txn_id`, which is needed to query the status of the operation
+      operationId: get_shifts
+      parameters:
+      - name: txn_id
+        in: query
+        required: true
+        schema:
+          type: string
+        description: ID of the transaction, as returned by the `POST`
+        example: asbd121@EASDmaosdfh92
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionStatus'
+    post:
+      tags:
+      - shifts
+      summary: Inserts or updates one or more shifts
+      description: For variable paid employees the "shift" is the fundamental building block of Wagestream. Wagestream uses shift information to calculate the portion of earnings an employee has access too
+      operationId: post_shifts
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '403':
+          description: Forbidden - API key required
+        '409':
+          description: Nonce was already used
+        '422':
+          description: Invalid format
+      requestBody:
+        description: An array of `shift` objects, submitted as `shifts` with an optional `nonce`
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShiftList'
+components:
+  schemas:
+    Shift:
+      type: object
+      description: For variable paid employees a "shift" tells Wagestream how much wages an employee has earned, and when they earned it
+      required:
+      - employee_id
+      - shift_id
+      - worked_on
+      - wages
+      - hours
+      properties:
+        employee_id:
+          type: string
+          description: Unique ID within your HRIS/Payroll/WFM of this employee
+          example: EMPL_001ABC
+          maxLength: 256
+        shift_id:
+          description: A unique identifier for this shift, it helps de-duplicate multiple submissions of the same shift data
+          type: string
+          example: 1203i3-aiasd1dnas90dh1d
+        worked_on:
+          description: Date the shift took place and will be paid for - format is in ISO 8601 format, e.g YYYY-MM-DD
+          type: string
+          format: date
+          pattern: ^\d{4}-\d{2}-\d{2}$
+          example: '2021-08-27'
+        started_at:
+          type: string
+          format: datetime
+          pattern: ^\d{4}-\d{2}-\d{2}$ \d{2}:\d{2}:\d{2}
+          description: For informational purposes only to show when the employees actual start date and time of a shift was
+          example: '2021-08-27 21:32:11'
+        ended_at:
+          type: string
+          format: datetime
+          pattern: ^\d{4}-\d{2}-\d{2}$ \d{2}:\d{2}:\d{2}
+          description: For informational purposes only to show when the employees actual end date and time of a shift was
+          example: '2021-08-28 02:32:12'
+        wages:
+          type: number
+          description: Total GROSS wage, to 2 decimal places
+          example: 75.25
+        hours:
+          type: number
+          example: 7
+          description: Number of hours worked, can be float or integer, 2 decimal places
+        rate:
+          type: number
+          example: 10.75
+          description: The rate of pay for this shift, decimal to 2 places
+        currency:
+          type: string
+          description: ISO currency code, i.e. GBP only required if you pay your workforce in multiple currencies
+          format: currency
+          pattern: ^[A-Z]{3}$
+          default: GBP
+        info:
+          type: string
+          description: A small textual description of the shift work e.g `Warehouse shift abc`
+          example: Distribution team a shift
+          default: ''
+        type:
+          type: string
+          description: Defines if this shift was standard, or overtime - if it's overtime we can configure the system to allow more access to overtime that standard
+          default: STANDARD
+          enum:
+          - STANDARD
+          - OVERTIME
+    TransactionStatus:
+      type: object
+      description: The structure in which results are reported
+      properties:
+        state:
+          type: string
+          example: failed
+          description: 'queued = The data was received and is pending final processing
+
+            processed = The data was received and processed, and will now be visible in your partner portal
+
+            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
+          enum:
+          - queued
+          - processed
+          - failed
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponseItemStatus'
+    TransactionStatusFieldItem:
+      type: object
+      additionalProperties: true
+      example:
+        employee_id:
+        - asdasd
+    ShiftList:
+      type: object
+      properties:
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+        nonce:
+          type: string
+          example: aosidjsd12312jdsojd
+          default: null
+    TransactionResponse:
+      type: object
+      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
+      properties:
+        ok:
+          type: boolean
+          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
+        rows:
+          type: integer
+          description: The number of employee rows received in the request which have been scheduled for processing
+          example: 232
+        txn_id:
+          type: string
+          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
+          example: asbd121@EASDmaosdfh92
+          maxLength: 32
+        api_key:
+          type: string
+          description: the original key used to make the API request with
+          example: deprecated
+          deprecated: true
+    TransactionResponseItemStatus:
+      type: object
+      description: A line by line explanation of
+      properties:
+        item_id:
+          type: string
+          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
+          example: EMPL_001ABC
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionStatusFieldItem'
+          description: A combination of warnings/errors which may have affected the import of this record
+          example:
+          - INVALID_DATETIME_FORMAT
+          - INVALID_ENUM_VALUE
+  securitySchemes:
+    name:
+      type: apiKey
+      name: x-api-key
+      in: header

@@ -1,0 +1,99 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Wagestream Integrations Enrollment API",
+    "version": "2.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "enrollment",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Returns the enrollment status of your employees",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/enrollments",
+            "params": [
+              {
+                "name": "changes_only",
+                "value": "",
+                "type": "query",
+                "description": "If true, will return only records which require you to perform an action on."
+              },
+              {
+                "name": "limit",
+                "value": "100",
+                "type": "query",
+                "description": "If >0, will only return a maximum number of records, ordered by requested_on asc (so, the 'oldest' records first)"
+              },
+              {
+                "name": "page",
+                "value": "1",
+                "type": "query",
+                "description": "Enables paging through the results in conjunction with the `limit` parameter"
+              },
+              {
+                "name": "banking_only",
+                "value": "",
+                "type": "query",
+                "description": "If true, will return only employees with banking details leaving only employees that have been fully enrolled."
+              }
+            ]
+          },
+          "docs": "With this endpoint you can detect which employees have enrolled, or requested to enrol. You can then use this information to choose how/whether you send us further data"
+        },
+        {
+          "info": {
+            "name": "Notifies Wagestream to complete the enrollment for an employee",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/enrollments",
+            "params": [
+              {
+                "name": "employee_id",
+                "value": "",
+                "type": "query",
+                "description": "ID of the employee to activate"
+              }
+            ]
+          },
+          "docs": "When an employee is approved for activation, and their bank details have changed in the employer's payroll system, POST to this endpoint to inform Wagestream. The employee will immediately be able to transfer any eligible wages."
+        },
+        {
+          "info": {
+            "name": "Simulate the start of the enrollment process for an employee",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/testenrollments",
+            "params": [
+              {
+                "name": "employee_ids",
+                "value": "",
+                "type": "query",
+                "description": "Comma delimited list of employee_id's to trigger the enrollment process with"
+              },
+              {
+                "name": "pending",
+                "value": "",
+                "type": "query",
+                "description": "This setting is only useful if you are implementing the `Enterprise` or `Instant Verification` enrolment flows. If you are using the `Standard` Enrolment flow, then this parameter is redundant.\n\nIncluding and setting pending to `true` simulates an employee registering on the app, and them then \naccepting terms and conditions. At this stage they are in Pending\n\nAfter polling for pending enrollments, and seeing an employee requesting to enroll - you would\nsubmit, via POSTing to the employees end point the remaining information required to complete\ntheir enrolment."
+              }
+            ]
+          },
+          "docs": "Only for use when testing, not available on production. This endpoints enables you to take an employee which you've previously uploaded and trigger the start of the enrollment process for, this enables you to test the end to end process for enrollments"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

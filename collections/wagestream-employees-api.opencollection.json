@@ -1,0 +1,52 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Wagestream Integrations Employees API",
+    "version": "2.1.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "employees",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Retrieve the status of your insert/update operation",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/employees",
+            "params": [
+              {
+                "name": "txn_id",
+                "value": "ac506743-fa12-4f2e-9ded-dfe1064ceaec",
+                "type": "query",
+                "description": "Supply the transaction id you recieved in the response from a POST to the employees endpoint"
+              }
+            ]
+          },
+          "docs": "Retrieve the status of your insert/update operation"
+        },
+        {
+          "info": {
+            "name": "Insert and/or Update (Upsert) your employees into Wagestream",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://publicapi.wagestream.io/pushapi-prod/employees",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Insert and/or Update (Upsert) your employees into Wagestream"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

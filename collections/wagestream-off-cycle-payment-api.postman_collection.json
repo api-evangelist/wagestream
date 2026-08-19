@@ -1,0 +1,316 @@
+{
+  "item": [
+    {
+      "id": "f12fb495-bae9-4aa1-8fe7-1fd030ccd5de",
+      "name": "off-cycle-payment",
+      "description": {
+        "content": "Operations relating to off-cycle payments",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ab40c423-eb98-4ea3-8597-eee1f052d48f",
+          "name": "Notify Wagestream of one or more offcycle payment for an employee",
+          "request": {
+            "name": "Notify Wagestream of one or more offcycle payment for an employee",
+            "description": {
+              "content": "Inserts expenses to be expected by employee at specified dates.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "off-cycle-payments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"payments\": [\n    {\n      \"employee_id\": \"<string>\",\n      \"amount\": \"<number>\",\n      \"expected_date\": \"<string>\"\n    },\n    {\n      \"employee_id\": \"<string>\",\n      \"amount\": \"<number>\",\n      \"expected_date\": \"<string>\"\n    }\n  ],\n  \"nonce\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6651919b-87e9-42a6-b2ca-bbb279e906b1",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "off-cycle-payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payments\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"amount\": 250.23,\n      \"expected_date\": \"2021-03-28\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"amount\": 250.23,\n      \"expected_date\": \"2021-03-28\"\n    }\n  ],\n  \"nonce\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"ok\": false,\n  \"rows\": 232,\n  \"txn_id\": \"asbd121@EASDmaosdfh92\",\n  \"api_key\": \"deprecated\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "7eb55d93-eacc-4d1a-8392-75e9e1ba6f10",
+              "name": "API key required",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "off-cycle-payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payments\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"amount\": 250.23,\n      \"expected_date\": \"2021-03-28\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"amount\": 250.23,\n      \"expected_date\": \"2021-03-28\"\n    }\n  ],\n  \"nonce\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c943c5bb-b313-401c-81ab-688f59f3b6d6",
+              "name": "Nonce was already used",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "off-cycle-payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payments\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"amount\": 250.23,\n      \"expected_date\": \"2021-03-28\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"amount\": 250.23,\n      \"expected_date\": \"2021-03-28\"\n    }\n  ],\n  \"nonce\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "9edc2c5d-b538-424e-b482-995db54824cc",
+              "name": "Invalid format",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "off-cycle-payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"payments\": [\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"amount\": 250.23,\n      \"expected_date\": \"2021-03-28\"\n    },\n    {\n      \"employee_id\": \"EMPL_001ABC\",\n      \"amount\": 250.23,\n      \"expected_date\": \"2021-03-28\"\n    }\n  ],\n  \"nonce\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unprocessable Entity (WebDAV) (RFC 4918)",
+              "code": 422,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "65839843-34f8-4d57-a4fc-52f688f32620",
+          "name": "Check status of a previous submission of Off-cycle payments",
+          "request": {
+            "name": "Check status of a previous submission of Off-cycle payments",
+            "description": {
+              "content": "A successful POST to `/off-cycle-payments` returns a `txn_id`, which is needed to query the status of the operation",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "off-cycle-payments"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "txn_id",
+                  "value": "<string>",
+                  "description": "(Required) The transaction ID, as returned by the original `POST` request"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b9706816-6f87-43bf-9990-14be71dcd5a2",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "off-cycle-payments"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "txn_id",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"state\": \"failed\",\n  \"results\": [\n    {\n      \"item_id\": \"EMPL_001ABC\",\n      \"status\": [\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        },\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        }\n      ]\n    },\n    {\n      \"item_id\": \"EMPL_001ABC\",\n      \"status\": [\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        },\n        {\n          \"employee_id\": [\n            \"asdasd\"\n          ]\n        }\n      ]\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://publicapi.wagestream.io/pushapi-prod",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d0223ec7-07ed-4c5a-9dc7-5a8059961661",
+    "name": "Wagestream Integrations Off Cycle Payment API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "-| Wagestreams API enables you to integrate your HR, Payroll and Workforce Management systems to Wagestream to enable your employees to become more financial resilient\n\nContact Support:\n Name: Wagestream Developer\n Email: developers@wagestream.com",
+      "type": "text/plain"
+    }
+  }
+}
