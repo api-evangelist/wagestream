@@ -18,6 +18,19 @@ specificationVersion: '0.23'
 created: '2026-08-05'
 modified: '2026-08-05'
 tags:
+- Financial Wellbeing
+- Earned Wage Access
+- Fintech
+- Payroll
+- Human Resources
+- Workforce Management
+- Time and Attendance
+- Employee Benefits
+- Workplace Savings
+- HR Integrations
+- B Corp
+- United Kingdom
+tags_raw:
 - financial-wellbeing
 - earned-wage-access
 - fintech
@@ -37,6 +50,8 @@ apis:
   humanURL: https://connect.stream.co/reference
   baseURL: https://publicapi.wagestream.io/pushapi-prod
   tags:
+  - Absences
+  tags_raw:
   - absences
   properties:
   - type: OpenAPI
@@ -55,6 +70,8 @@ apis:
   humanURL: https://connect.stream.co/reference
   baseURL: https://publicapi.wagestream.io/pushapi-prod
   tags:
+  - Employees
+  tags_raw:
   - employees
   properties:
   - type: OpenAPI
@@ -73,6 +90,8 @@ apis:
   humanURL: https://connect.stream.co/reference
   baseURL: https://publicapi.wagestream.io/pushapi-prod
   tags:
+  - Enrollment
+  tags_raw:
   - enrollment
   properties:
   - type: OpenAPI
@@ -109,6 +128,8 @@ apis:
   humanURL: https://connect.stream.co/reference
   baseURL: https://publicapi.wagestream.io/pushapi-prod
   tags:
+  - Shifts
+  tags_raw:
   - shifts
   properties:
   - type: OpenAPI
