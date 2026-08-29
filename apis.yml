@@ -11,6 +11,18 @@ description: >-
   banking records — or via SFTP file feeds and browser upload into the employer administration portal.
   The API is API-key authenticated, asynchronous (every write returns a transaction id polled through a
   matching GET), and idempotent through an optional per-request nonce.
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://stream.co/api/media/file/Home_Hero_Left.webp
 url: https://raw.githubusercontent.com/api-evangelist/wagestream/refs/heads/main/apis.yml
 x-type: company
