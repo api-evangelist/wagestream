@@ -13,13 +13,13 @@ servers:
 - url: https://publicapi.wagestream.io/pushapi-staging
   description: Sandbox Environment
 tags:
-- name: absences
+- name: Absences
   description: Operations relating to absences
 paths:
   /absences:
     post:
       tags:
-      - absences
+      - Absences
       summary: Inserts or updates one or more absences
       description: Absences will allow you to control when your employees stop accumulating a balance in Wagestream, ensuring they only have access to salary that has been earnt.
       operationId: post_absences
@@ -44,7 +44,7 @@ paths:
               $ref: '#/components/schemas/AbsenceList'
     get:
       tags:
-      - absences
+      - Absences
       summary: Check status of a previous POST
       description: A successful POST to `/absences returns a `txn_id`, which is needed to query the status of the operation
       operationId: get_absences
@@ -65,32 +65,6 @@ paths:
                 $ref: '#/components/schemas/TransactionStatus'
 components:
   schemas:
-    TransactionStatus:
-      type: object
-      description: The structure in which results are reported
-      properties:
-        state:
-          type: string
-          example: failed
-          description: 'queued = The data was received and is pending final processing
-
-            processed = The data was received and processed, and will now be visible in your partner portal
-
-            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
-          enum:
-          - queued
-          - processed
-          - failed
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransactionResponseItemStatus'
-    TransactionStatusFieldItem:
-      type: object
-      additionalProperties: true
-      example:
-        employee_id:
-        - asdasd
     TransactionResponse:
       type: object
       description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
@@ -112,6 +86,22 @@ components:
           description: the original key used to make the API request with
           example: deprecated
           deprecated: true
+    TransactionResponseItemStatus:
+      type: object
+      description: A line by line explanation of
+      properties:
+        item_id:
+          type: string
+          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
+          example: EMPL_001ABC
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionStatusFieldItem'
+          description: A combination of warnings/errors which may have affected the import of this record
+          example:
+          - INVALID_DATETIME_FORMAT
+          - INVALID_ENUM_VALUE
     AbsenceList:
       type: object
       properties:
@@ -162,22 +152,32 @@ components:
       - absence_id
       - type
       - reason
-    TransactionResponseItemStatus:
+    TransactionStatusFieldItem:
       type: object
-      description: A line by line explanation of
+      additionalProperties: true
+      example:
+        employee_id:
+        - asdasd
+    TransactionStatus:
+      type: object
+      description: The structure in which results are reported
       properties:
-        item_id:
+        state:
           type: string
-          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
-          example: EMPL_001ABC
-        status:
+          example: failed
+          description: 'queued = The data was received and is pending final processing
+
+            processed = The data was received and processed, and will now be visible in your partner portal
+
+            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
+          enum:
+          - queued
+          - processed
+          - failed
+        results:
           type: array
           items:
-            $ref: '#/components/schemas/TransactionStatusFieldItem'
-          description: A combination of warnings/errors which may have affected the import of this record
-          example:
-          - INVALID_DATETIME_FORMAT
-          - INVALID_ENUM_VALUE
+            $ref: '#/components/schemas/TransactionResponseItemStatus'
   securitySchemes:
     name:
       type: apiKey

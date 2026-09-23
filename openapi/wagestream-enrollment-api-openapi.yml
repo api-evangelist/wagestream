@@ -13,13 +13,13 @@ servers:
 - url: https://publicapi.wagestream.io/pushapi-staging
   description: Sandbox Environment
 tags:
-- name: enrollment
+- name: Enrollment
   description: Operations relating to enrolling employees in Wagestream
 paths:
   /enrollments:
     get:
       tags:
-      - enrollment
+      - Enrollment
       summary: Returns the enrollment status of your employees
       description: With this endpoint you can detect which employees have enrolled, or requested to enrol. You can then use this information to choose how/whether you send us further data
       parameters:
@@ -67,11 +67,13 @@ paths:
                 $ref: '#/components/schemas/enrollment_list'
         '403':
           description: Forbidden - API key required or invalid
+      operationId: getEnrollments
+      x-operation-id-source: derived
     post:
       operationId: post_enrollments
       deprecated: true
       tags:
-      - enrollment
+      - Enrollment
       summary: Notifies Wagestream to complete the enrollment for an employee
       description: When an employee is approved for activation, and their bank details have changed in the employer's payroll system, POST to this endpoint to inform Wagestream. The employee will immediately be able to transfer any eligible wages.
       parameters:
@@ -92,7 +94,7 @@ paths:
       summary: Simulate the start of the enrollment process for an employee
       description: Only for use when testing, not available on production. This endpoints enables you to take an employee which you've previously uploaded and trigger the start of the enrollment process for, this enables you to test the end to end process for enrollments
       tags:
-      - enrollment
+      - Enrollment
       parameters:
       - name: employee_ids
         in: query
@@ -125,6 +127,8 @@ paths:
           description: Success
         '403':
           description: Forbidden - API key invalid
+      operationId: postTestenrollments
+      x-operation-id-source: derived
 components:
   schemas:
     enrollment:

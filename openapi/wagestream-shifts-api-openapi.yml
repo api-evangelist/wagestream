@@ -13,13 +13,13 @@ servers:
 - url: https://publicapi.wagestream.io/pushapi-staging
   description: Sandbox Environment
 tags:
-- name: shifts
+- name: Shifts
   description: Operations relating to Shifts
 paths:
   /shifts:
     get:
       tags:
-      - shifts
+      - Shifts
       summary: Check status of a previous POST
       description: A successful POST to `/shifts` returns a `txn_id`, which is needed to query the status of the operation
       operationId: get_shifts
@@ -40,7 +40,7 @@ paths:
                 $ref: '#/components/schemas/TransactionStatus'
     post:
       tags:
-      - shifts
+      - Shifts
       summary: Inserts or updates one or more shifts
       description: For variable paid employees the "shift" is the fundamental building block of Wagestream. Wagestream uses shift information to calculate the portion of earnings an employee has access too
       operationId: post_shifts
@@ -65,6 +65,60 @@ paths:
               $ref: '#/components/schemas/ShiftList'
 components:
   schemas:
+    ShiftList:
+      type: object
+      properties:
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Shift'
+        nonce:
+          type: string
+          example: aosidjsd12312jdsojd
+          default: null
+    TransactionResponse:
+      type: object
+      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
+      properties:
+        ok:
+          type: boolean
+          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
+        rows:
+          type: integer
+          description: The number of employee rows received in the request which have been scheduled for processing
+          example: 232
+        txn_id:
+          type: string
+          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
+          example: asbd121@EASDmaosdfh92
+          maxLength: 32
+        api_key:
+          type: string
+          description: the original key used to make the API request with
+          example: deprecated
+          deprecated: true
+    TransactionResponseItemStatus:
+      type: object
+      description: A line by line explanation of
+      properties:
+        item_id:
+          type: string
+          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
+          example: EMPL_001ABC
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionStatusFieldItem'
+          description: A combination of warnings/errors which may have affected the import of this record
+          example:
+          - INVALID_DATETIME_FORMAT
+          - INVALID_ENUM_VALUE
+    TransactionStatusFieldItem:
+      type: object
+      additionalProperties: true
+      example:
+        employee_id:
+        - asdasd
     Shift:
       type: object
       description: For variable paid employees a "shift" tells Wagestream how much wages an employee has earned, and when they earned it
@@ -152,60 +206,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransactionResponseItemStatus'
-    TransactionStatusFieldItem:
-      type: object
-      additionalProperties: true
-      example:
-        employee_id:
-        - asdasd
-    ShiftList:
-      type: object
-      properties:
-        shifts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Shift'
-        nonce:
-          type: string
-          example: aosidjsd12312jdsojd
-          default: null
-    TransactionResponse:
-      type: object
-      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
-      properties:
-        ok:
-          type: boolean
-          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
-        rows:
-          type: integer
-          description: The number of employee rows received in the request which have been scheduled for processing
-          example: 232
-        txn_id:
-          type: string
-          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
-          example: asbd121@EASDmaosdfh92
-          maxLength: 32
-        api_key:
-          type: string
-          description: the original key used to make the API request with
-          example: deprecated
-          deprecated: true
-    TransactionResponseItemStatus:
-      type: object
-      description: A line by line explanation of
-      properties:
-        item_id:
-          type: string
-          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
-          example: EMPL_001ABC
-        status:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransactionStatusFieldItem'
-          description: A combination of warnings/errors which may have affected the import of this record
-          example:
-          - INVALID_DATETIME_FORMAT
-          - INVALID_ENUM_VALUE
   securitySchemes:
     name:
       type: apiKey

@@ -1,11 +1,7 @@
 {
   "provider": "wagestream",
   "sources": [
-    "wagestream-absences-api-openapi.yml",
-    "wagestream-employees-api-openapi.yml",
-    "wagestream-enrollment-api-openapi.yml",
-    "wagestream-off-cycle-payment-api-openapi.yml",
-    "wagestream-shifts-api-openapi.yml"
+    "_original/wagestream-integrations-api-openapi.json"
   ],
   "outputs": [
     "wagestream-absences-api-openapi.yml",
@@ -18,12 +14,17 @@
   "errors": [],
   "warnings": [],
   "notes": [
-    "wagestream-absences-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "wagestream-employees-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "wagestream-enrollment-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "wagestream-off-cycle-payment-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
-    "wagestream-shifts-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "1 archived document(s) dropped as subsets of other archived documents",
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "wagestream-integrations-api-openapi.json: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
     "apis.yml register: already-registered"
   ],
-  "skipped": []
+  "skipped": [
+    "_original/wagestream-integrations-api-openapi.yml: archived document superseded by a larger archived document",
+    "wagestream-absences-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "wagestream-employees-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "wagestream-enrollment-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "wagestream-off-cycle-payment-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "wagestream-shifts-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

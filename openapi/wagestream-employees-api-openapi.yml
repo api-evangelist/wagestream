@@ -13,13 +13,13 @@ servers:
 - url: https://publicapi.wagestream.io/pushapi-staging
   description: Sandbox Environment
 tags:
-- name: employees
+- name: Employees
   description: Operations relating to employees
 paths:
   /employees:
     get:
       tags:
-      - employees
+      - Employees
       summary: Retrieve the status of your insert/update operation
       parameters:
       - in: query
@@ -41,10 +41,12 @@ paths:
         '403':
           description: Forbidden - API Key not recognised/invalid
       description: ''
+      operationId: getEmployees
+      x-operation-id-source: derived
     post:
       summary: Insert and/or Update (Upsert) your employees into Wagestream
       tags:
-      - employees
+      - Employees
       requestBody:
         description: An array of employee objects, submitted as employees with an optional nonce
         content:
@@ -64,8 +66,20 @@ paths:
           description: Conflict - the nonce value has already been used
         '422':
           description: Unprocessable Entity - it's likely the payload json did not validate
+      operationId: postEmployees
+      x-operation-id-source: derived
 components:
   schemas:
+    EmployeeList:
+      properties:
+        employees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Employee'
+        nonce:
+          type: string
+          description: supply a unique identifier for the request to ensure this request is used/consumed only once.
+          default: ''
     TransactionResponse:
       type: object
       description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
@@ -87,16 +101,6 @@ components:
           description: the original key used to make the API request with
           example: deprecated
           deprecated: true
-    EmployeeList:
-      properties:
-        employees:
-          type: array
-          items:
-            $ref: '#/components/schemas/Employee'
-        nonce:
-          type: string
-          description: supply a unique identifier for the request to ensure this request is used/consumed only once.
-          default: ''
     Employee:
       type: object
       required:
