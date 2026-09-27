@@ -65,27 +65,6 @@ paths:
                 $ref: '#/components/schemas/TransactionStatus'
 components:
   schemas:
-    TransactionResponse:
-      type: object
-      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
-      properties:
-        ok:
-          type: boolean
-          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
-        rows:
-          type: integer
-          description: The number of employee rows received in the request which have been scheduled for processing
-          example: 232
-        txn_id:
-          type: string
-          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
-          example: asbd121@EASDmaosdfh92
-          maxLength: 32
-        api_key:
-          type: string
-          description: the original key used to make the API request with
-          example: deprecated
-          deprecated: true
     TransactionResponseItemStatus:
       type: object
       description: A line by line explanation of
@@ -113,6 +92,27 @@ components:
           type: string
           example: aosidjsd12312jdsojd
           default: null
+    TransactionResponse:
+      type: object
+      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
+      properties:
+        ok:
+          type: boolean
+          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
+        rows:
+          type: integer
+          description: The number of employee rows received in the request which have been scheduled for processing
+          example: 232
+        txn_id:
+          type: string
+          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
+          example: asbd121@EASDmaosdfh92
+          maxLength: 32
+        api_key:
+          type: string
+          description: the original key used to make the API request with
+          example: deprecated
+          deprecated: true
     absences:
       type: object
       title: Absences
@@ -152,12 +152,6 @@ components:
       - absence_id
       - type
       - reason
-    TransactionStatusFieldItem:
-      type: object
-      additionalProperties: true
-      example:
-        employee_id:
-        - asdasd
     TransactionStatus:
       type: object
       description: The structure in which results are reported
@@ -178,6 +172,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransactionResponseItemStatus'
+    TransactionStatusFieldItem:
+      type: object
+      additionalProperties: true
+      example:
+        employee_id:
+        - asdasd
   securitySchemes:
     name:
       type: apiKey

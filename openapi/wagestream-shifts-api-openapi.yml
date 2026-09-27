@@ -65,17 +65,22 @@ paths:
               $ref: '#/components/schemas/ShiftList'
 components:
   schemas:
-    ShiftList:
+    TransactionResponseItemStatus:
       type: object
+      description: A line by line explanation of
       properties:
-        shifts:
+        item_id:
+          type: string
+          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
+          example: EMPL_001ABC
+        status:
           type: array
           items:
-            $ref: '#/components/schemas/Shift'
-        nonce:
-          type: string
-          example: aosidjsd12312jdsojd
-          default: null
+            $ref: '#/components/schemas/TransactionStatusFieldItem'
+          description: A combination of warnings/errors which may have affected the import of this record
+          example:
+          - INVALID_DATETIME_FORMAT
+          - INVALID_ENUM_VALUE
     TransactionResponse:
       type: object
       description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
@@ -97,28 +102,17 @@ components:
           description: the original key used to make the API request with
           example: deprecated
           deprecated: true
-    TransactionResponseItemStatus:
+    ShiftList:
       type: object
-      description: A line by line explanation of
       properties:
-        item_id:
-          type: string
-          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
-          example: EMPL_001ABC
-        status:
+        shifts:
           type: array
           items:
-            $ref: '#/components/schemas/TransactionStatusFieldItem'
-          description: A combination of warnings/errors which may have affected the import of this record
-          example:
-          - INVALID_DATETIME_FORMAT
-          - INVALID_ENUM_VALUE
-    TransactionStatusFieldItem:
-      type: object
-      additionalProperties: true
-      example:
-        employee_id:
-        - asdasd
+            $ref: '#/components/schemas/Shift'
+        nonce:
+          type: string
+          example: aosidjsd12312jdsojd
+          default: null
     Shift:
       type: object
       description: For variable paid employees a "shift" tells Wagestream how much wages an employee has earned, and when they earned it
@@ -206,6 +200,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransactionResponseItemStatus'
+    TransactionStatusFieldItem:
+      type: object
+      additionalProperties: true
+      example:
+        employee_id:
+        - asdasd
   securitySchemes:
     name:
       type: apiKey
