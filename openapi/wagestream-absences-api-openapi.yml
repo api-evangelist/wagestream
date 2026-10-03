@@ -65,33 +65,6 @@ paths:
                 $ref: '#/components/schemas/TransactionStatus'
 components:
   schemas:
-    TransactionResponseItemStatus:
-      type: object
-      description: A line by line explanation of
-      properties:
-        item_id:
-          type: string
-          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
-          example: EMPL_001ABC
-        status:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransactionStatusFieldItem'
-          description: A combination of warnings/errors which may have affected the import of this record
-          example:
-          - INVALID_DATETIME_FORMAT
-          - INVALID_ENUM_VALUE
-    AbsenceList:
-      type: object
-      properties:
-        absences:
-          type: array
-          items:
-            $ref: '#/components/schemas/absences'
-        nonce:
-          type: string
-          example: aosidjsd12312jdsojd
-          default: null
     TransactionResponse:
       type: object
       description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
@@ -152,6 +125,17 @@ components:
       - absence_id
       - type
       - reason
+    AbsenceList:
+      type: object
+      properties:
+        absences:
+          type: array
+          items:
+            $ref: '#/components/schemas/absences'
+        nonce:
+          type: string
+          example: aosidjsd12312jdsojd
+          default: null
     TransactionStatus:
       type: object
       description: The structure in which results are reported
@@ -172,6 +156,22 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransactionResponseItemStatus'
+    TransactionResponseItemStatus:
+      type: object
+      description: A line by line explanation of
+      properties:
+        item_id:
+          type: string
+          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
+          example: EMPL_001ABC
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionStatusFieldItem'
+          description: A combination of warnings/errors which may have affected the import of this record
+          example:
+          - INVALID_DATETIME_FORMAT
+          - INVALID_ENUM_VALUE
     TransactionStatusFieldItem:
       type: object
       additionalProperties: true

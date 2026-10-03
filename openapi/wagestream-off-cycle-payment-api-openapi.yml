@@ -65,22 +65,6 @@ paths:
                 $ref: '#/components/schemas/TransactionStatus'
 components:
   schemas:
-    TransactionResponseItemStatus:
-      type: object
-      description: A line by line explanation of
-      properties:
-        item_id:
-          type: string
-          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
-          example: EMPL_001ABC
-        status:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransactionStatusFieldItem'
-          description: A combination of warnings/errors which may have affected the import of this record
-          example:
-          - INVALID_DATETIME_FORMAT
-          - INVALID_ENUM_VALUE
     off-cycle-payment:
       type: object
       title: Off-cycle Payment
@@ -102,6 +86,55 @@ components:
       - employee_id
       - amount
       - expected_date
+    TransactionStatus:
+      type: object
+      description: The structure in which results are reported
+      properties:
+        state:
+          type: string
+          example: failed
+          description: 'queued = The data was received and is pending final processing
+
+            processed = The data was received and processed, and will now be visible in your partner portal
+
+            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
+          enum:
+          - queued
+          - processed
+          - failed
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponseItemStatus'
+    off-cycle-payment-list:
+      type: object
+      title: Off-cycle Payment List
+      properties:
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/off-cycle-payment'
+        nonce:
+          type: string
+          description: An optional nonce to prevent duplicate submissions of the same api request
+      required:
+      - off-cycle-payment
+    TransactionResponseItemStatus:
+      type: object
+      description: A line by line explanation of
+      properties:
+        item_id:
+          type: string
+          description: the original id of the element passed into it, e.g if an employee it will be an employee_id, or shift, it will be the shift_id
+          example: EMPL_001ABC
+        status:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionStatusFieldItem'
+          description: A combination of warnings/errors which may have affected the import of this record
+          example:
+          - INVALID_DATETIME_FORMAT
+          - INVALID_ENUM_VALUE
     TransactionResponse:
       type: object
       description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
@@ -123,39 +156,6 @@ components:
           description: the original key used to make the API request with
           example: deprecated
           deprecated: true
-    off-cycle-payment-list:
-      type: object
-      title: Off-cycle Payment List
-      properties:
-        payments:
-          type: array
-          items:
-            $ref: '#/components/schemas/off-cycle-payment'
-        nonce:
-          type: string
-          description: An optional nonce to prevent duplicate submissions of the same api request
-      required:
-      - off-cycle-payment
-    TransactionStatus:
-      type: object
-      description: The structure in which results are reported
-      properties:
-        state:
-          type: string
-          example: failed
-          description: 'queued = The data was received and is pending final processing
-
-            processed = The data was received and processed, and will now be visible in your partner portal
-
-            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
-          enum:
-          - queued
-          - processed
-          - failed
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransactionResponseItemStatus'
     TransactionStatusFieldItem:
       type: object
       additionalProperties: true

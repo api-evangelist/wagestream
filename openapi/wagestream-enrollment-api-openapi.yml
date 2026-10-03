@@ -131,22 +131,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    enrollment_list:
-      type: object
-      title: activation_list
-      properties:
-        enrollments:
-          type: array
-          items:
-            $ref: '#/components/schemas/enrollment'
-        total_records:
-          type: integer
-          description: the total rows available
-          example: 3202
-        page:
-          type: integer
-          description: the current page of results, it is indexed at 1, not 0
-          example: 1
     enrollment:
       type: object
       description: An enrollment record describing the enrollment status of an employee
@@ -214,6 +198,22 @@ components:
             - DISABLED  = An employee has been disabled from the service
 
             - OPTOUT    = An employee has chosen, or been forcibly opted out of the service         '
+    enrollment_list:
+      type: object
+      title: activation_list
+      properties:
+        enrollments:
+          type: array
+          items:
+            $ref: '#/components/schemas/enrollment'
+        total_records:
+          type: integer
+          description: the total rows available
+          example: 3202
+        page:
+          type: integer
+          description: the current page of results, it is indexed at 1, not 0
+          example: 1
   securitySchemes:
     name:
       type: apiKey
