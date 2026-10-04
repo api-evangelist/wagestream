@@ -1,0 +1,36 @@
+slug: wagestream
+provider: Wagestream
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Employees
+  spec_file: wagestream-employees-api-openapi.yml
+  capability_id: BC-300.70
+  capability_id_l1: BC-300
+  capability_name: HR Operations Management
+  confidence: 0.8
+  evidence: POST /employees  postEmployees  Insert and/or Update (Upsert) your employees into Wagestream
+  reason: Employee master records (Employee, EmployeeList schemas) synchronised from HR and payroll systems
+    — employee records and payroll-adjacent HR data administration, i.e. HR Operations Management within
+    Human Capital Management.
+- tag: Absences
+  spec_file: wagestream-absences-api-openapi.yml
+  capability_id: BC-300.70
+  capability_id_l1: BC-300
+  capability_name: HR Operations Management
+  confidence: 0.75
+  evidence: POST /absences  post_absences  Inserts or updates one or more absences; 'integrate your HR,
+    Payroll and Workforce Management systems'
+  reason: Operations upsert employee absence records fed from HR/payroll/WFM systems, which is employee-record
+    and HR data administration. HR Operations Management is the best fit; some chance the intended sub-capability
+    is workforce/time management, hence not higher.
