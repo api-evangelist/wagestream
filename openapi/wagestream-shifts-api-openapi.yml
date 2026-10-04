@@ -65,6 +65,27 @@ paths:
               $ref: '#/components/schemas/ShiftList'
 components:
   schemas:
+    TransactionResponse:
+      type: object
+      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
+      properties:
+        ok:
+          type: boolean
+          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
+        rows:
+          type: integer
+          description: The number of employee rows received in the request which have been scheduled for processing
+          example: 232
+        txn_id:
+          type: string
+          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
+          example: asbd121@EASDmaosdfh92
+          maxLength: 32
+        api_key:
+          type: string
+          description: the original key used to make the API request with
+          example: deprecated
+          deprecated: true
     ShiftList:
       type: object
       properties:
@@ -76,26 +97,6 @@ components:
           type: string
           example: aosidjsd12312jdsojd
           default: null
-    TransactionStatus:
-      type: object
-      description: The structure in which results are reported
-      properties:
-        state:
-          type: string
-          example: failed
-          description: 'queued = The data was received and is pending final processing
-
-            processed = The data was received and processed, and will now be visible in your partner portal
-
-            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
-          enum:
-          - queued
-          - processed
-          - failed
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransactionResponseItemStatus'
     TransactionResponseItemStatus:
       type: object
       description: A line by line explanation of
@@ -179,33 +180,32 @@ components:
           enum:
           - STANDARD
           - OVERTIME
-    TransactionResponse:
-      type: object
-      description: Wagestream processess all API requests asynchronously, this response provides the detail required to be able to request a status update on the state of processing for this request
-      properties:
-        ok:
-          type: boolean
-          description: describes whether the data was scheduled for processing successfully, processing usually occurs within 3 minutes of submission
-        rows:
-          type: integer
-          description: The number of employee rows received in the request which have been scheduled for processing
-          example: 232
-        txn_id:
-          type: string
-          description: The transaction ID you would use in a GET request to the /employees endpoint to retrieve the status of processing
-          example: asbd121@EASDmaosdfh92
-          maxLength: 32
-        api_key:
-          type: string
-          description: the original key used to make the API request with
-          example: deprecated
-          deprecated: true
     TransactionStatusFieldItem:
       type: object
       additionalProperties: true
       example:
         employee_id:
         - asdasd
+    TransactionStatus:
+      type: object
+      description: The structure in which results are reported
+      properties:
+        state:
+          type: string
+          example: failed
+          description: 'queued = The data was received and is pending final processing
+
+            processed = The data was received and processed, and will now be visible in your partner portal
+
+            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
+          enum:
+          - queued
+          - processed
+          - failed
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponseItemStatus'
   securitySchemes:
     name:
       type: apiKey
