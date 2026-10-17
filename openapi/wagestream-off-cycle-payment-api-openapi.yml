@@ -86,19 +86,6 @@ components:
           description: the original key used to make the API request with
           example: deprecated
           deprecated: true
-    off-cycle-payment-list:
-      type: object
-      title: Off-cycle Payment List
-      properties:
-        payments:
-          type: array
-          items:
-            $ref: '#/components/schemas/off-cycle-payment'
-        nonce:
-          type: string
-          description: An optional nonce to prevent duplicate submissions of the same api request
-      required:
-      - off-cycle-payment
     TransactionResponseItemStatus:
       type: object
       description: A line by line explanation of
@@ -115,6 +102,39 @@ components:
           example:
           - INVALID_DATETIME_FORMAT
           - INVALID_ENUM_VALUE
+    off-cycle-payment-list:
+      type: object
+      title: Off-cycle Payment List
+      properties:
+        payments:
+          type: array
+          items:
+            $ref: '#/components/schemas/off-cycle-payment'
+        nonce:
+          type: string
+          description: An optional nonce to prevent duplicate submissions of the same api request
+      required:
+      - off-cycle-payment
+    TransactionStatus:
+      type: object
+      description: The structure in which results are reported
+      properties:
+        state:
+          type: string
+          example: failed
+          description: 'queued = The data was received and is pending final processing
+
+            processed = The data was received and processed, and will now be visible in your partner portal
+
+            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
+          enum:
+          - queued
+          - processed
+          - failed
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionResponseItemStatus'
     off-cycle-payment:
       type: object
       title: Off-cycle Payment
@@ -142,26 +162,6 @@ components:
       example:
         employee_id:
         - asdasd
-    TransactionStatus:
-      type: object
-      description: The structure in which results are reported
-      properties:
-        state:
-          type: string
-          example: failed
-          description: 'queued = The data was received and is pending final processing
-
-            processed = The data was received and processed, and will now be visible in your partner portal
-
-            failed = The data was received, but an error occurred while processing. Check your partner portal for further details.'
-          enum:
-          - queued
-          - processed
-          - failed
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/TransactionResponseItemStatus'
   securitySchemes:
     name:
       type: apiKey

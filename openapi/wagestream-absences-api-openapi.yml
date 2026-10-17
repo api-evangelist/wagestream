@@ -152,12 +152,6 @@ components:
       - absence_id
       - type
       - reason
-    TransactionStatusFieldItem:
-      type: object
-      additionalProperties: true
-      example:
-        employee_id:
-        - asdasd
     TransactionStatus:
       type: object
       description: The structure in which results are reported
@@ -178,6 +172,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TransactionResponseItemStatus'
+    TransactionStatusFieldItem:
+      type: object
+      additionalProperties: true
+      example:
+        employee_id:
+        - asdasd
   securitySchemes:
     name:
       type: apiKey
